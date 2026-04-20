@@ -1,0 +1,24 @@
+.statusbar-wrapper {
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 0 10px;
+    font-weight: bold;   
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem;
+    border-radius: 2px;
+}
+.statusbar-wrapper.Normal {
+    background-color: rgb(0, 38, 255);
+}
+.statusbar-wrapper.Insert {
+    background-color: rgb(66, 110, 0);
+}
+.statusbar-wrapper.Visual {
+    background-color: purple;
+}
+.statusbar-wrapper.Replace {
+    background-color: crimson;
+}

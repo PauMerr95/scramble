@@ -1,0 +1,13 @@
+<div class="statusbar-wrapper" 
+[class.Normal]= "activeMode === 'Normal'"
+[class.Insert]= "activeMode === 'Insert'"
+[class.Visual]= "activeMode === 'Visual'"
+[class.Replace]="activeMode === 'Replace'"
+>
+    <div class="modeDisplay">
+        <p>> {{activeMode}}</p>
+    </div>
+    <div class="infoDisplay">
+        <p>[{{activeInfo}}]</p>
+    </div>
+</div>

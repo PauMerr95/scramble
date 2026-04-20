@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+*{
+    margin: 0;
+    padding: 0;
+}
+html, body {
+    height: 100dvh;
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #161616;
+    background-color: #f3f3f3;
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+
+    display: block;
+}
+
+app-root {
+    height: 100%;
+}

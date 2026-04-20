@@ -1,0 +1,29 @@
+<nav>
+    <div class="navbar-icon-wrapper">
+        <ul>
+        <li>
+            <app-icon-profile
+                id="Profile"
+                class="navbar-icon"
+                [class.active]="activeIcon === 'Profile'";
+                (click)="toggleSidePane.emit('Profile')">
+            </app-icon-profile>
+        </li>
+        <li>
+            <app-icon-folder
+                id="Files"
+                class="navbar-icon"
+                [class.active]="activeIcon === 'Files'";
+                (click)="toggleSidePane.emit('Files')">
+            </app-icon-folder>
+        <li>
+            <app-icon-db_search 
+                id="Query"
+                class="navbar-icon"
+                [class.active]="activeIcon === 'Query'";
+                (click)="toggleSidePane.emit('Query')">
+            </app-icon-db_search>
+        </li>
+        </ul>
+    </div>
+</nav>
