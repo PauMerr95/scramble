@@ -1,0 +1,88 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.viewer-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 5px;
+    background: var(--seq-bg, #1e1e2e);
+    color: var(--seq-fg, #cdd6f4);
+    outline: none;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background: var(--tb-bg, #181825);
+    border-bottom: 1px solid var(--tb-border, #313244);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #a6adc8;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.toolbar-title {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #cdd6f4;
+}
+
+.toolbar-hint {
+    color: #585b70;
+    font-size: 10px;
+}
+
+kbd {
+    display: inline-block;
+    padding: 1px 4px;
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 10px;
+    color: #cdd6f4;
+}
+
+.scroll-viewport {
+    height: 100%;
+    display: block;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+/* Scrollbar styling */
+.scroll-viewport::-webkit-scrollbar { width: 6px; }
+.scroll-viewport::-webkit-scrollbar-track { background: transparent; }
+.scroll-viewport::-webkit-scrollbar-thumb { background: #313244; border-radius: 3px; }
+.scroll-viewport::-webkit-scrollbar-thumb:hover { background: #45475a; }
+
+.record-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.rec-label {
+    font-size: 10px;
+    color: #a6adc8;
+    min-width: 36px;
+    text-align: center;
+}
+.rec-btn {
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 3px;
+    color: #cdd6f4;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 5px 1px;
+    cursor: pointer;
+}
+.rec-btn:disabled { opacity: 0.3; cursor: default; }
+.rec-btn:not(:disabled):hover { background: #45475a; }

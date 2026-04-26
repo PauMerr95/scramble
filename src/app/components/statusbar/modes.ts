@@ -1,1 +1,0 @@
-export type mode = "Normal" | "Visual" | "Insert" | "Replace";

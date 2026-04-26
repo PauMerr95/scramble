@@ -1,15 +1,13 @@
 <div class="sidePane-wrapper">
     <app-icon-hideSP class="icon"
-    (click)="hideSidePane.emit()">
+    (click)="hideSidePane.emit()"
+    (mouseenter)="hover = true"
+    (mouseleave)="hover = false"
+    [svg_color]="hover ? '#FAF0E6' : '#000000'">
     </app-icon-hideSP>
 
     @if(sidePaneElement === "Profile") {
         <p>Showing Profile!</p>
-        <label for="modeswitch">Switch Mode</label>
-        <button id="modeswitch-normal"  (click)="switchMode.emit('Normal')">Normal</button>
-        <button id="modeswitch-insert"  (click)="switchMode.emit('Insert')">Insert</button>
-        <button id="modeswitch-visual"  (click)="switchMode.emit('Visual')">Visual</button>
-        <button id="modeswitch-replace" (click)="switchMode.emit('Replace')">Replace</button>
     }
     @if(sidePaneElement === "Files") {
         <p>Showing Files!</p>

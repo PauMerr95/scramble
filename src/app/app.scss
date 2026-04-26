@@ -1,5 +1,5 @@
 .app-wrapper{
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: grid;
     grid-template-areas: 
@@ -7,7 +7,7 @@
     'nav side stat'
     'nav side cmd';
     grid-template-columns:  40px 200px auto;
-    grid-template-rows:     auto 30px 200px;
+    grid-template-rows:     auto 30px 60px;
     transition: grid-template-columns 0.1s ease;
 }
 .app-wrapper.hidden{
@@ -16,26 +16,27 @@
 
 .navbar-port {
     grid-area: nav;
+    margin: 0.1em 0.1em 0 0;
     height: 100%;
 }
 .mainPane-port {
     grid-area: main;
-    background-color: aqua;
+    margin: 0.1em 0 0 0;
 }
+
 
 .statusbar-port {
     grid-area: stat;
-    margin-right: 2px;
+    margin: 0.1em 0 0.1em 0;
 }
 
 .sidePane-port {
     grid-area: side;
-    height: 100%;
-    overflow: hidden;
+    margin: 0.1em 0.1em 0 0;
 }
 
-.cmdline-wrapper {
+.cmdline-port {
     grid-area: cmd;
-    border: 2px dashed red;
     height: 100%;
+    margin: 0.1em 0 0 0;
 }

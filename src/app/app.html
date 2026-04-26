@@ -1,34 +1,32 @@
-<div id="app-wrapper-id" class="app-wrapper hidden">
+<div class="app-wrapper" [class.hidden]="layout.sidePaneState() === 'Hidden'">
 
     <div class="navbar-port">
         <app-navbar
-        (toggleSidePane)="toggleSidePane($event)"
-        [activeIcon]=sidePaneStatus>
+        (toggleSidePane)="layout.toggleSidePane($event)"
+        [activeIcon]="layout.sidePaneState()">
         </app-navbar>
     </div>
 
     <div class="mainPane-port">
-        MAIN
+        <app-main-pane></app-main-pane>
     </div>
 
-    @if (sidePaneStatus !== "hidden") {
+    @if (layout.sidePaneState() !== "Hidden") {
     <div class="sidePane-port">
         <app-side-pane
-        [sidePaneElement]="sidePaneStatus"
-        (hideSidePane)="toggleSidePane('hidden')"
+        [sidePaneElement]="layout.sidePaneState()"
+        (hideSidePane)="layout.toggleSidePane('Hidden')"
         (switchMode)="switchMode($event)">
         </app-side-pane>
     </div>
     }
 
     <div class="statusbar-port">
-        <app-statusbar
-        [activeMode]=activeMode
-        ></app-statusbar>
+        <app-statusbar></app-statusbar>
     </div>
     
-    <div class="cmdline-wrapper">
-        Commandline
+    <div class="cmdline-port">
+        <app-cmd-line></app-cmd-line>
     </div>
 
 </div>

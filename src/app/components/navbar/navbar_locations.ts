@@ -1,1 +1,0 @@
-export type navbarLocation = "Profile" | "Files" | "Query";
