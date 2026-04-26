@@ -57,7 +57,7 @@ export class CmdInput {
   protected readonly cli = inject(CmdLineService);
   private readonly _inputRef = viewChild.required<ElementRef<HTMLInputElement>>('cmdInput');
 
-  constructor() {
+  constructor(lyt: LayoutService, cli: CmdLineService) {
     afterRenderEffect(() => {
       const el = this._inputRef().nativeElement;
       el.onclick = null;
@@ -66,6 +66,9 @@ export class CmdInput {
     effect(() => {
       if (this.lyt.currentFocus() === "CmdLine") {
         this._inputRef().nativeElement.focus();
+      }
+      if (this.cli.cmdInput() !== this._inputRef().nativeElement.value) {
+        this._inputRef().nativeElement.value = this.cli.cmdInput();
       }
     });
   }
@@ -82,7 +85,8 @@ export class CmdInput {
         }
         return e.key;
       });
-      this.cli.checkLeader();
+      const result = this.cli.checkLeader();
+      if (result === "Success") this._inputRef().nativeElement.value = '';
       return;
     }
     if (e.key === "Enter") {
@@ -91,6 +95,12 @@ export class CmdInput {
         return;
       }
       this.cli.checkCommand();
+      const result = this.cli.checkCommand();
+      if (result === "Success") this._inputRef().nativeElement.value = '';
     }
+  }
+
+  clearInput() {
+    this._inputRef().nativeElement.value = '';
   }
 }

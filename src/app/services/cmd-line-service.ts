@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, ElementRef } from '@angular/core';
 import { CmdInputType, CmdOutputType, Command } from '../types/cmd_types';
 import { SequenceViewerService } from './sequence-viewer-service';
 import { LayoutService } from './layout-service';
@@ -11,6 +11,7 @@ export class CmdLineService {
     private layoutService: LayoutService,
     private seqviewService: SequenceViewerService) {}
 
+  
   readonly cmdInput = signal<string>('');
   readonly cmdInputType = signal<CmdInputType | null>(null);
 
@@ -37,24 +38,28 @@ export class CmdLineService {
     this.cmdOutput.set(`Found ${this.seqviewService.hlAreas().length} instances of '${query}'`)
   }
 
-  checkCommand(){
+  checkCommand(): CmdOutputType{
     const cmd = this.leaderCmds[this.cmdInput()];
     if(cmd){
       cmd();
+      return "Success";
     } else {
       this.cmdOutputType.set("Failure");
       this.cmdOutput.set(`Could not find any commands called ${this.cmdInput}`)
+      return "Failure";
     }
   }
 
-  checkLeader() {
+  checkLeader(): CmdOutputType {
     const cmd = this.leaderCmds[this.cmdInput()];
     if(cmd){
       clearTimeout(this.leaderTimeout);
       cmd();
       this.cmdInput.set('');
       this.cmdInputType.set(null);
+      return "Success";
     }
+    return "Failure";
   }
   
   abort(){
