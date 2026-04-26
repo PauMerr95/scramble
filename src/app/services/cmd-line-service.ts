@@ -15,7 +15,7 @@ export class CmdLineService {
   readonly cmdInput = signal<string>('');
   readonly cmdInputType = signal<CmdInputType | null>(null);
 
-  readonly cmdOutput = signal<string>('');
+  readonly cmdOutput = signal<string>("Scramble booted up successfully");
   readonly cmdOutputType = signal<CmdOutputType>("Neutral");
 
   handleInput(mode: CmdInputType) {
@@ -26,26 +26,34 @@ export class CmdLineService {
     }
   }
 
-  checkSearch() {
+  checkSearch(): CmdOutputType {
     const query = this.cmdInput();
     const isfound = this.seqviewService.search(query);
+    this.cmdInput.set('');
+    this.cmdInputType.set(null);
+
     if (!isfound) {
       this.cmdOutputType.set("Failure");
       this.cmdOutput.set(`'${query}' could not be found in the active sequence`);
-      return;
+      return "Failure";
     }
     this.cmdOutputType.set("Success");
     this.cmdOutput.set(`Found ${this.seqviewService.hlAreas().length} instances of '${query}'`)
+    return "Success"
   }
 
   checkCommand(): CmdOutputType{
-    const cmd = this.leaderCmds[this.cmdInput()];
+    const cmd = this.executeCmds[this.cmdInput()];
     if(cmd){
       cmd();
+      this.cmdInput.set('');
+      this.cmdInputType.set(null);
       return "Success";
     } else {
       this.cmdOutputType.set("Failure");
-      this.cmdOutput.set(`Could not find any commands called ${this.cmdInput}`)
+      this.cmdOutput.set(`Could not find any commands called ${this.cmdInput()}`)
+      this.cmdInput.set('');
+      this.cmdInputType.set(null);
       return "Failure";
     }
   }
@@ -77,8 +85,10 @@ export class CmdLineService {
     q: () => this.layoutService.toggleSidePane("Query")
   };
   private readonly executeCmds: Record<string, Command> = {
-    "get joke": () => {
+    getJoke: () => {
       this.cmdOutput.set("I can't C# without my glasses.");
-      this.cmdOutputType.set("Success")}
+      this.cmdOutputType.set("Success");
+      this.layoutService.focusOn("MainPane");
+    }
   };
 }

@@ -24,11 +24,12 @@
     </div>
 
     <cdk-virtual-scroll-viewport
+    #viewport
     [itemSize]="itemSizePx"
     [autofocus]="lyt.currentFocus() === 'MainPane'"
     class="scroll-viewport">
 
-    @for (line of sqv.lines(); track sqv.activeRecordIdx(); let idx = $index) {
+    @for (line of sqv.lines(); let idx = $index; track idx) {
         <app-sequence-line
             [line]="line"
             [lineIndex]="idx"

@@ -1,18 +1,12 @@
 import { 
-  AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   ElementRef,
   HostListener,
-  inject,
-  OnInit,
   ViewChild } from '@angular/core';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { SequenceViewerService, LINE_WIDTH } from '../../services/sequence-viewer-service';
 import { SequenceLine } from '../sequence-line/sequence-line';
-import { Statusbar } from '../statusbar/statusbar';
 import { CmdLineService } from '../../services/cmd-line-service';
 import { LayoutService } from '../../services/layout-service';
 
@@ -30,7 +24,7 @@ export const ITEM_SIZE_PX = 22;
 
 @Component({
   selector: 'app-sequence-viewer-component',
-  imports: [ScrollingModule, SequenceLine],
+  imports: [CdkVirtualScrollViewport, ScrollingModule, SequenceLine],
   templateUrl: './sequence-viewer-component.html',
   styleUrl: './sequence-viewer-component.scss',
 })

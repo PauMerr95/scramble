@@ -5,22 +5,23 @@ import { IconSearch } from "../../icons/search";
 import { IconIdle } from "../../icons/idle";
 import { IconLeader } from '../../icons/leader';
 import { IconCommand } from '../../icons/command';
+import { Color } from '../../../types/main_types';
 
 @Component({
   selector: 'app-input',
   imports: [IconIdle, IconLeader, IconSearch, IconCommand],
   template: `
     @if (this.cli.cmdInputType() === null) {
-      <app-icon-idle class="icon" svg_color="#55dc48"></app-icon-idle>
+      <app-icon-idle class="icon" svg_color="#FFFFFF"></app-icon-idle>
     }
     @if (this.cli.cmdInputType() === "Command") {
-      <app-icon-command class="icon" svg_color="#55dc48"></app-icon-command>
+      <app-icon-command class="icon" svg_color="#e362f2"></app-icon-command>
     }
     @if (this.cli.cmdInputType() === "Leader") {
-      <app-icon-leader class="icon" svg_color="#55dc48"></app-icon-leader>
+      <app-icon-leader class="icon" svg_color="#ffe563"></app-icon-leader>
     }
     @if (this.cli.cmdInputType() === "Search") {
-      <app-icon-search class="icon" svg_color="#55dc48"></app-icon-search>
+      <app-icon-search class="icon" svg_color="#94ff8c"></app-icon-search>
     }
     <input #cmdInput class='cmd-input-field' type=text (keydown)="onKey($event)"/>
   `,
@@ -37,7 +38,7 @@ import { IconCommand } from '../../icons/command';
     .cmd-input-field {
       width: 100%;
       max-height: 20px;
-      color: var(--cmd-fg, #55dc48);
+      color: var(--cmd-fg, #FFFFFF);
       background: var(--cmd-bg, #181825);
       border: 0;
       font-family: 'Fira Mono', 'Cascadia Code', 'Jetbrains Mono', 'Ubuntu Mono', 'SF Mono', 'Consolas';
@@ -67,8 +68,8 @@ export class CmdInput {
       if (this.lyt.currentFocus() === "CmdLine") {
         this._inputRef().nativeElement.focus();
       }
-      if (this.cli.cmdInput() !== this._inputRef().nativeElement.value) {
-        this._inputRef().nativeElement.value = this.cli.cmdInput();
+      if (!this.cli.cmdInput()) {
+        this._inputRef().nativeElement.value = '';
       }
     });
   }
@@ -77,30 +78,24 @@ export class CmdInput {
     if (e.key === 'Escape') {
       this.cli.abort();
     }
+    if (e.key === "Enter") {
+      this.cli.cmdInput.set(this._inputRef().nativeElement.value);
+      if (this.cli.cmdInputType() === "Search") {
+        this.cli.checkSearch();
+        return;
+      }
+      // cmdInputType === Command
+      this.cli.checkCommand();
+      return;
+    }
+    console.log(`This cmdInput = ${this.cli.cmdInput()}`);
     if (this.cli.cmdInputType() === "Leader") {
       this.cli.cmdInput.update(cmd => {
-        if (cmd) {
-          if (e.key === 'Delete') return cmd.slice();
-          return cmd + e.key;
-        }
-        return e.key;
+        return (cmd) ? (cmd + e.key) : e.key;
       });
       const result = this.cli.checkLeader();
       if (result === "Success") this._inputRef().nativeElement.value = '';
       return;
     }
-    if (e.key === "Enter") {
-      if (this.cli.cmdInputType() === "Search") {
-        this.cli.checkSearch();
-        return;
-      }
-      this.cli.checkCommand();
-      const result = this.cli.checkCommand();
-      if (result === "Success") this._inputRef().nativeElement.value = '';
-    }
-  }
-
-  clearInput() {
-    this._inputRef().nativeElement.value = '';
   }
 }

@@ -2,7 +2,6 @@ import { Component, signal, inject } from '@angular/core';
 import { Navbar } from "./components/navbar/navbar";
 import { SidePane } from "./components/side-pane/side-pane";
 import { MainPane } from "./components/main-pane/main-pane";
-import { NavbarLocation } from './types/navbar_locations';
 import { Statusbar } from "./components/statusbar/statusbar";
 import { EditorMode } from './types/main_types';
 import { CmdLine } from "./components/cmd/cmd-line/cmd-line";
