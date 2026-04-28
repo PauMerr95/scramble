@@ -1,42 +1,17 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject, effect } from '@angular/core';
 import { CursorPos, EditorMode, sequence, VisualSelection, FastaRecord } from '../types/main_types';
 import { HighlightArea } from '../types/cmd_types';
+import { DataSessionService } from './data-session-service';
 
 export const LINE_WIDTH = 120;
 
-function parseFasta(raw: string): FastaRecord[] {
-  const records: FastaRecord[] = [];
-  let current: FastaRecord | null = null;
-
-  for (const rawLine of raw.split(/\r?\n/)) {
-    const line = rawLine.trim();
-
-    if (line.startsWith('>')) {
-      if (current) records.push(current);
-      current = {
-        header: line.slice(1).trim(),
-        comments: [],
-        sequence: ''
-      };
-    } else if (line.startsWith(';')) {
-      if (current) {
-        current.comments.push(line.slice(1).trim());
-      }
-    } else if (line.length > 0) {
-      if (current) {
-        current.sequence += line.replace(/\s/g, '').toUpperCase();
-      }
-    }
-  }
-  if (current) records.push(current);
-  return records;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class SequenceViewerService {
-  readonly records = signal<FastaRecord[]>([]);
+  readonly data = inject(DataSessionService);
+  readonly records =  this.data.loadedFastas;
   readonly activeRecordIdx = signal<number>(0);
 
   readonly activeRecord = computed<FastaRecord | null>(() => {
@@ -53,6 +28,24 @@ export class SequenceViewerService {
   readonly cursorOffset = signal<number>(0);
   readonly visualAnchor = signal<number | null>(null);
   readonly hlAreas = signal<HighlightArea[]>([]);
+
+  constructor() {
+    let prevLength = 0;
+    effect(() => {
+      const fastas = this.data.loadedFastas();
+      const currLength = fastas.length;
+
+      if (currLength > prevLength) {
+        this.selectRecord(currLength - 1);
+      } else if (currLength < prevLength) {
+        if (this.activeRecordIdx() > currLength - 1) {
+          this.selectRecord(currLength - 1);
+        }
+      }
+
+      prevLength = currLength;
+    });
+  }
 
   readonly lines = computed<string[]>(() => {
     const seq = this.sequence();
@@ -82,12 +75,6 @@ export class SequenceViewerService {
   });
 
   //-----------------------------
-  loadFasta(raw: sequence): void {
-    const parsed = parseFasta(raw);
-    this.records.set(parsed);
-    this.selectRecord(0);
-  }
-
   selectRecord(index: number): void {
     const recs = this.records();
     if (index < 0 || index >= recs.length) return;
