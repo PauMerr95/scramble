@@ -13,4 +13,12 @@ describe('DataSessionService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('method "parseFasta" works as expected', () => {
+    // TODO: Create Test
+  });
+
+  it('method "search" works as expected', () => {
+    // TODO: Create Test
+  });
 });

@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { FastaRecord } from '../types/main_types';
+import { CursorPos, FastaRecord, Result, SearchResult } from '../types/main_types';
+import { LINE_WIDTH } from './sequence-viewer-service';
 
 const DUMMY_SEQUENCE = `>DUMMY_ACE2 Homo sapiens ACE2 gene fragment [demo]
 ATGTCAAGCTCTTCCTGGCTCCTTCTCAGCCTTGTTGCTGTAACTAAAACGGAAGTTTATAAACATCATC
@@ -45,5 +46,38 @@ export class DataSessionService {
       }
     }
     if (current) this.loadedFastas().push(current);
+  }
+
+  search(query: string, fastaRecordIdx: number, where: keyof FastaRecord = "sequence"): SearchResult {
+    const result: SearchResult = { status: "Fail", value: []};
+    if (fastaRecordIdx > this.loadedFastas().length - 1 || fastaRecordIdx < 0) return result;
+    if (!query) return result;
+    const rec = this.loadedFastas()[fastaRecordIdx];
+    let searchItem = '';
+    switch (where) {
+      case 'header': searchItem += rec.header; break; 
+      case 'comments': rec.comments.forEach(comment => {searchItem += comment}); break;
+      case 'sequence': searchItem = rec.sequence; break; 
+    }
+    if (!searchItem) return result;
+
+    let idxStart = 0;
+    const maxIdx = searchItem.length - 1 - query.length;
+    while (idxStart < maxIdx) {
+      idxStart = searchItem.indexOf(query, idxStart);
+      if (idxStart < 0) break;
+      result.status = "Pass";
+      if (where === "sequence") {
+        result.value.push({
+          row: Math.floor(idxStart/LINE_WIDTH),
+          col: idxStart % LINE_WIDTH,
+          offset: idxStart
+        });
+        idxStart++;
+        continue;
+      }
+      break;
+    }
+    return result;
   }
 }
