@@ -6,6 +6,7 @@ export type RGBA = `rgb(${number}, ${number}, ${number}, ${number})`
 export type HEX = `#${string}`
 export type Color = RGB | RGBA | HEX;
 export type Result = "Pass" | "Fail";
+export type FilePath = string | null;
 
 export interface CursorPos {
     row: number;

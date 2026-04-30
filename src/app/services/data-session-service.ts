@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { CursorPos, FastaRecord, Result, SearchResult } from '../types/main_types';
+import { CursorPos, FastaRecord, FilePath, Result, SearchResult } from '../types/main_types';
 import { LINE_WIDTH } from './sequence-viewer-service';
 
 const DUMMY_SEQUENCE = `>DUMMY_ACE2 Homo sapiens ACE2 gene fragment [demo]
@@ -55,14 +55,14 @@ export class DataSessionService {
     const rec = this.loadedFastas()[fastaRecordIdx];
     let searchItem = '';
     switch (where) {
-      case 'header': searchItem += rec.header; break; 
+      case 'header':   searchItem += rec.header; break; 
       case 'comments': rec.comments.forEach(comment => {searchItem += comment}); break;
-      case 'sequence': searchItem = rec.sequence; break; 
+      case 'sequence': searchItem = rec.sequence; break;  // This seems very inefficient
     }
     if (!searchItem) return result;
 
     let idxStart = 0;
-    const maxIdx = searchItem.length - 1 - query.length;
+    const maxIdx = searchItem.length - query.length;
     while (idxStart < maxIdx) {
       idxStart = searchItem.indexOf(query, idxStart);
       if (idxStart < 0) break;
@@ -80,4 +80,5 @@ export class DataSessionService {
     }
     return result;
   }
+
 }

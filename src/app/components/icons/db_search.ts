@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Color } from '../../types/main_types';
 
 @Component({
-  selector: 'app-icon-db_search',
+  selector: 'app-icon-db-search',
   imports: [],
   template: `
   <svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" [attr.color]="svg_color">
