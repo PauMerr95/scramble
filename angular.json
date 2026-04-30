@@ -73,7 +73,11 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "browsers": ["firefox"]
+            "browsers": ["firefox"],
+            "include": [
+              "**/*.spec.ts",
+              "**/*.test.ts"
+            ]
           }
         }
       }

@@ -10,6 +10,6 @@ import { Color } from '../../types/main_types';
   </svg>
   `,
 })
-export class hideSidePane {
+export class IconHideSP {
   @Input() svg_color: Color = '#FAF0E6';
 }
