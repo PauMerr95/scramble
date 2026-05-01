@@ -18,7 +18,7 @@ export class LayoutService {
       if (currState === location) return "Hidden";
       return location;
     });
-    this._currentFocus.set("SidePane");
+    (this._sidePaneState() === "Hidden") ? this._currentFocus.set("MainPane") : this._currentFocus.set("SidePane");
   }
 
   focusOn(foc: FocusLocation | null) {

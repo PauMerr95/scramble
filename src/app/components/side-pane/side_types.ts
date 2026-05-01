@@ -1,0 +1,1 @@
+export type Avatar = "Bird" | "Duck" | "Earth" | "Falling" | "Sheep" | "Squirrel";

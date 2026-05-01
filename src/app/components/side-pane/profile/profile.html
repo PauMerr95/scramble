@@ -1,0 +1,21 @@
+<div class="profile-picture-wrapper">
+@if (chosenProfilePicture() === "Bird") {
+    <img src="/icons/profile-bird.png" alt="Bird" class="profile-bird"/>
+}
+@if (chosenProfilePicture() === "Duck") {
+    <img src="/icons/profile-duck.png" class="profile-duck"/>
+}
+@if (chosenProfilePicture() === "Sheep") {
+    <img src="/icons/profile-sheep.png" class="profile-sheep"/>
+}
+@if (chosenProfilePicture() === "Earth") {
+    <img src="/icons/profile-earth.png" class="profile-earth"/>
+}
+@if (chosenProfilePicture() === "Falling") {
+    <img src="/icons/profile-falling.png" class="profile-falling"/>
+}
+@if (chosenProfilePicture() === "Squirrel") {
+    <img src="/icons/profile-squirrel.png" class="profile-squirrel"/>
+}
+<span class="user-name">{{ userName() }}</span>
+</div>
