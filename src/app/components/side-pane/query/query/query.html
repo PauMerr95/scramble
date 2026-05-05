@@ -1,5 +1,6 @@
 <nav class="router-wrapper">
     <button
+    #btnGenome="routerLinkActive"
     class="router-button"
     routerLinkActive="active-route"
     [routerLinkActiveOptions]="{ exact: true }"
@@ -9,10 +10,11 @@
         class="query-icon"
         (mouseenter)="hoverGenome = true"
         (mouseleave)="hoverGenome = false"
-        [svg_color]="'#FAF0E6'">
+        [svg_color]="btnGenome.isActive ? '#1f2937' : '#FAF0E6'">
         </app-icon-query-genome>
     </button>
     <button
+    #btnGene="routerLinkActive"
     class="router-button"
     routerLinkActive="active-route"
     [routerLinkActiveOptions]="{ exact: true }"
@@ -21,10 +23,11 @@
         class="query-icon"
         (mouseenter)="hoverGene = true"
         (mouseleave)="hoverGene = false"
-        [svg_color]="'#FAF0E6'">
+        [svg_color]="btnGene.isActive ?  '#1f2937' : '#FAF0E6'">
         </app-icon-query-gene>
     </button>
     <button
+    #btnProkaryot="routerLinkActive"
     class="router-button"
     routerLinkActive="active-route"
     [routerLinkActiveOptions]="{ exact: true }"
@@ -34,10 +37,11 @@
         class="query-icon"
         (mouseenter)="hoverProkaryot = true"
         (mouseleave)="hoverProkaryot = false"
-        [svg_color]="'#FAF0E6'">
+        [svg_color]="btnProkaryot.isActive ?  '#1f2937' : '#FAF0E6'">
         </app-icon-query-prokaryot>
     </button>
     <button
+    #btnVirus="routerLinkActive"
     class="router-button"
     routerLink="query/virus"
     routerLinkActive="active-route">
@@ -45,10 +49,11 @@
         class="query-icon"
         (mouseenter)="hoverVirus = true"
         (mouseleave)="hoverVirus = false"
-        [svg_color]="'#FAF0E6'">
+        [svg_color]="btnVirus.isActive ? '#1f2937' : '#FAF0E6'">
         </app-icon-query-virus>
     </button>
     <button
+    #btnOrganelle="routerLinkActive"
     class="router-button"
     routerLink="query/organelle"
     routerLinkActive="active-route">
@@ -56,7 +61,7 @@
         class="query-icon"
         (mouseenter)="hoverOrganelle = true"
         (mouseleave)="hoverOrganelle = false"
-        [svg_color]="'#FAF0E6'">
+        [svg_color]="btnOrganelle.isActive ? '#1f2937' : '#FAF0E6'">
         </app-icon-query-organelle>
     </button>
 </nav> 
