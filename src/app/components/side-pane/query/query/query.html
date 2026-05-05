@@ -1,0 +1,63 @@
+<nav class="router-wrapper">
+    <button
+    class="router-button"
+    routerLinkActive="active-route"
+    [routerLinkActiveOptions]="{ exact: true }"
+    routerLink="query/genome"
+    >
+        <app-icon-query-genome
+        class="query-icon"
+        (mouseenter)="hoverGenome = true"
+        (mouseleave)="hoverGenome = false"
+        [svg_color]="'#FAF0E6'">
+        </app-icon-query-genome>
+    </button>
+    <button
+    class="router-button"
+    routerLinkActive="active-route"
+    [routerLinkActiveOptions]="{ exact: true }"
+    routerLink="query/gene">
+        <app-icon-query-gene
+        class="query-icon"
+        (mouseenter)="hoverGene = true"
+        (mouseleave)="hoverGene = false"
+        [svg_color]="'#FAF0E6'">
+        </app-icon-query-gene>
+    </button>
+    <button
+    class="router-button"
+    routerLinkActive="active-route"
+    [routerLinkActiveOptions]="{ exact: true }"
+    routerLink="query/prokaryot"
+    >
+        <app-icon-query-prokaryot
+        class="query-icon"
+        (mouseenter)="hoverProkaryot = true"
+        (mouseleave)="hoverProkaryot = false"
+        [svg_color]="'#FAF0E6'">
+        </app-icon-query-prokaryot>
+    </button>
+    <button
+    class="router-button"
+    routerLink="query/virus"
+    routerLinkActive="active-route">
+        <app-icon-query-virus
+        class="query-icon"
+        (mouseenter)="hoverVirus = true"
+        (mouseleave)="hoverVirus = false"
+        [svg_color]="'#FAF0E6'">
+        </app-icon-query-virus>
+    </button>
+    <button
+    class="router-button"
+    routerLink="query/organelle"
+    routerLinkActive="active-route">
+        <app-icon-query-organelle
+        class="query-icon"
+        (mouseenter)="hoverOrganelle = true"
+        (mouseleave)="hoverOrganelle = false"
+        [svg_color]="'#FAF0E6'">
+        </app-icon-query-organelle>
+    </button>
+</nav> 
+<router-outlet />

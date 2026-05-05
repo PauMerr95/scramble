@@ -9,6 +9,11 @@ import { Color } from '../../types/main_types';
     <path d="M440-240 200-480l240-240 56 56-183 184 183 184-56 56Zm264 0L464-480l240-240 56 56-183 184 183 184-56 56Z"/>
   </svg>
   `,
+  styles:`
+    svg {
+      object-fit: cover;
+    }
+  `,
 })
 export class IconHideSP {
   @Input() svg_color: Color = '#FAF0E6';

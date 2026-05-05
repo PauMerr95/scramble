@@ -4,12 +4,12 @@ import { NavbarLocation } from '../../types/navbar_locations';
 import { EditorMode } from '../../types/main_types';
 import { LayoutService } from '../../services/layout-service';
 import { ProfileComponent } from './profile/profile';
-import { SequenceViewerService } from '../../services/sequence-viewer-service';
 import { CmdLineService } from '../../services/cmd-line-service';
+import { Query } from './query/query/query';
 
 @Component({
   selector: 'app-side-pane',
-  imports: [IconHideSP, ProfileComponent],
+  imports: [IconHideSP, ProfileComponent, Query],
   templateUrl: './side-pane.html',
   styleUrl: './side-pane.scss',
 })

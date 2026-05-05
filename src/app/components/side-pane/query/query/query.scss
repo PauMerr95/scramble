@@ -1,0 +1,31 @@
+.router-wrapper {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.router-button {
+    width: 35px;
+    height: 35px;
+    padding: 0.2em;
+    border: none;
+    background: #1f2937;
+    border-radius: 0.6em;
+}
+.router-button:hover {
+    background-color: #1d8284;
+    cursor: pointer;
+}
+.query-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: flex-start;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.active-route{
+    box-shadow: 0 5px 0 0 #41d0d3;
+}
