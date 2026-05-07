@@ -17,15 +17,6 @@ import { Component } from '@angular/core';
      display: flex;
      overflow: auto;
    }
-   :host.targeted {
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     align-items: center;
-
-     box-shadow: 0 0 15px 10px #1d8284;
-     border-radius: 50%;
-   }
   `,
 })
 export class AvatarDuck {}

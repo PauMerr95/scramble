@@ -14,7 +14,6 @@
     @if (layout.sidePaneState() !== "Hidden") {
     <div class="sidePane-port">
         <app-side-pane
-        [sidePaneElement]="layout.sidePaneState()"
         (hideSidePane)="layout.toggleSidePane('Hidden')"
         (switchMode)="switchMode($event)">
         </app-side-pane>

@@ -1,6 +1,5 @@
 import { Component, ElementRef, HostListener, EventEmitter, Input, Output, effect, inject, viewChild } from '@angular/core';
 import { IconHideSP } from "../icons/hide_sidePane";
-import { NavbarLocation } from '../../types/navbar_locations';
 import { EditorMode } from '../../types/main_types';
 import { LayoutService } from '../../services/layout-service';
 import { ProfileComponent } from './profile/profile';
@@ -14,7 +13,6 @@ import { Query } from './query/query/query';
   styleUrl: './side-pane.scss',
 })
 export class SidePane {
-  @Input() sidePaneElement!: NavbarLocation;
   @Output() hideSidePane = new EventEmitter<null>();
   @Output() switchMode = new EventEmitter<EditorMode>();
 
@@ -35,9 +33,16 @@ export class SidePane {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e: KeyboardEvent){
-    if (e.key === ' ') {
-      this.lyt.focusOn("CmdLine");
-      this.cli.handleInput("Leader");
+    console.log(`Keyevent: ${e.key}`);
+    switch(e.key){
+      case ' ':
+        this.lyt.focusOn("CmdLine");
+        this.cli.handleInput("Leader");
+        break;
+      case 'j': case 'ArrowDown':  this.lyt.moveDown();  break;
+      case 'k': case 'ArrowUp':    this.lyt.moveUp();    break;
+      case 'h': case 'ArrowLeft':  this.lyt.moveLeft();  break;
+      case 'l': case 'ArrowRight': this.lyt.moveRight(); break;
     }
     e.preventDefault();
   }

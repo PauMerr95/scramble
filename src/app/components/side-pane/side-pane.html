@@ -6,13 +6,13 @@
     [svg_color]="hover ? '#FAF0E6' : '#000000'">
     </app-icon-hideSP>
 
-    @if(sidePaneElement === "Profile") {
+    @if(this.lyt.sidePaneState() === "Profile") {
         <app-profile></app-profile>
     }
-    @if(sidePaneElement === "Files") {
+    @if(this.lyt.sidePaneState() === "Files") {
         <p>Showing Files!</p>
     }
-    @if(sidePaneElement === "Query") {
+    @if(this.lyt.sidePaneState() === "Query") {
         <app-query></app-query>
     }
 </div>

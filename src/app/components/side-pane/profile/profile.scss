@@ -1,11 +1,32 @@
-.profile-picture-wrapper {
-    margin-top: 1rem;
-
+.profile-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1rem;
+}
+.profile-picture-wrapper {
+    margin-top: 1rem;
+    display: flex;
+}
+
+.profile-picture-wrapper.targeted {
+    box-shadow: 0 0 15px 10px #1d8284;
+    border-radius: 50%;
+}
+
+.user-name.targeted{
+    box-shadow: 0 3px 10px 0 #1d8284,
+                0 -3px 10px 0 #1d8284;
+}
+
+.user-bio.targeted {
+    box-shadow: 0 3px 10px 0 #1d8284,
+                0 -3px 10px 0 #1d8284;
+}
+
+h3 {
+    font-size: medium;
 }
 
 .user-name {

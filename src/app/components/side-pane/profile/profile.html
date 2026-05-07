@@ -1,28 +1,30 @@
-<div class="profile-picture-wrapper">
-        @if (chosenProfilePicture() === "Bird") {
-            <app-avatar-bird [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-bird>
-        }
-        @if (chosenProfilePicture() === "Duck") {
-            <app-avatar-duck [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-duck>
-        }
-        @if (chosenProfilePicture() === "Sheep") {
-            <app-avatar-sheep [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-sheep>
-        }
-        @if (chosenProfilePicture() === "Earth") {
-            <app-avatar-earth [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-earth>
-        }
-        @if (chosenProfilePicture() === "Falling") {
-            <app-avatar-falling [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-falling>
-        }
-        @if (chosenProfilePicture() === "Squirrel") {
-            <app-avatar-squirrel [class.targeted]="selectedItem() === 'ProfilePicture'"></app-avatar-squirrel>
-        }
+<div class="profile-wrapper">
+    <div class="profile-picture-wrapper" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileAvatar'">
+            @if (chosenProfilePicture() === "Bird") {
+                <app-avatar-bird></app-avatar-bird>
+            }
+            @if (chosenProfilePicture() === "Duck") {
+                <app-avatar-duck></app-avatar-duck>
+            }
+            @if (chosenProfilePicture() === "Sheep") {
+                <app-avatar-sheep></app-avatar-sheep>
+            }
+            @if (chosenProfilePicture() === "Earth") {
+                <app-avatar-earth></app-avatar-earth>
+            }
+            @if (chosenProfilePicture() === "Falling") {
+                <app-avatar-falling></app-avatar-falling>
+            }
+            @if (chosenProfilePicture() === "Squirrel") {
+                <app-avatar-squirrel></app-avatar-squirrel>
+            }
+    </div>
 
-<span class="user-name" [class.targeted]="selectedItem() === 'UserName'">
-    {{ userName() }}
-</span>
-<h3>About me:</h3>
-<p [class.targeted]="selectedItem() === 'Description'">
-    {{ userDescription() }}
-</p>
+    <span class="user-name" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileName'">
+        {{ userName() }}
+    </span>
+    <h3>About:</h3>
+    <p class="user-bio" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileBio'">
+        {{ userDescription() }}
+    </p>
 </div>
