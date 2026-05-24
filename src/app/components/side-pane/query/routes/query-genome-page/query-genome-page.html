@@ -1,1 +1,37 @@
-<p>query-genome-page works!</p>
+<div class="query-wrapper">
+<div class="query-title-wrapper">
+    <span>Genome Query</span>
+</div>
+<select
+    name="query-option"
+    [value]="firstSelection() ?? 'Choose query option'"
+    (change)="firstSelection.set($any($event.target).value)">
+    <option value="Choose query option" disabled hidden>Choose query option</option>
+    @for (opt of queryOptions; track opt) {
+        <option [value]="opt">{{opt}}</option>
+    }
+</select>
+
+@if (firstSelection() !== null) {
+    <input 
+        type="text"
+        id="query-input"
+        class="query-input"
+        placeholder="Enter query parameter"
+        />
+    <span class="query-help-example">Example: {{ helpFirstSelection() }}</span>
+    <select
+        name="retrieval-option"
+        [value]="secondSelection() ?? 'Choose retrieval option'"
+        (change)="secondSelection.set($any($event.target).value)">
+            <option value="Choose retrieval option" disabled hidden>Choose retrieval option</option>
+            @for (opt of secondOptions(); track opt) {
+                <option [value]="opt">{{opt}}</option>
+            }
+    </select>
+}
+@if (secondOptions() !== null) {
+    <span class="query-help-example">{{ helpSecondSelection() }}</span>
+    <button class="btn-query">Retrieve</button>
+}
+</div>

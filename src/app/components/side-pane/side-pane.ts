@@ -33,7 +33,7 @@ export class SidePane {
 
   @HostListener('keydown', ['$event'])
   onKeyDown(e: KeyboardEvent){
-    console.log(`Keyevent: ${e.key}`);
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
     switch(e.key){
       case ' ':
         this.lyt.focusOn("CmdLine");

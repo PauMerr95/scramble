@@ -52,6 +52,7 @@ import { Color } from '../../../types/main_types';
       outline: none;
     }
   `,
+  standalone: true,
 })
 export class CmdInput {
   protected readonly lyt = inject(LayoutService);
