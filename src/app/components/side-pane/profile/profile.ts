@@ -7,6 +7,7 @@ import { AvatarFalling } from './avatars/falling/falling';
 import { AvatarEarth } from './avatars/earth/earth';
 import { AvatarSheep } from './avatars/sheep/sheep';
 import { LayoutService } from '../../../services/layout-service';
+import { DataSessionService } from '../../../services/data-session-service';
 
 @Component({
   selector: 'app-profile',
@@ -20,6 +21,7 @@ export class ProfileComponent {
   readonly userDescription = signal<string>("I am a test user and I like long walks on the beach.");
 
   readonly lyt = inject(LayoutService);
+  readonly data = inject(DataSessionService);
 
   readonly _grid: MoveGrid = [
     ["ProfileAvatar"],

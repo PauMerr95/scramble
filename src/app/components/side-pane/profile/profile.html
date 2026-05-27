@@ -23,8 +23,9 @@
     <span class="user-name" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileName'">
         {{ userName() }}
     </span>
-    <h3>About:</h3>
+    <span class="heading">About:</span>
     <p class="user-bio" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileBio'">
         {{ userDescription() }}
     </p>
+    <span class="heading">API_KEY:</span>
 </div>
