@@ -1,6 +1,6 @@
 export type Avatar = "Bird" | "Duck" | "Earth" | "Falling" | "Sheep" | "Squirrel";
 export type SelectableLocation = 
-    "ProfileAvatar" | "ProfileName" | "ProfileBio" |
+    "ProfileAvatar" | "ProfileName" | "ProfileBio" | "ProfileKey" | "ProfilePath" |
     "FileItem" |
     "QueryGenome" | "QueryGene" | "QueryProkaryot" | "QueryVirus" | "QueryOrganelle";
 

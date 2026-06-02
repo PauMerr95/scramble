@@ -27,5 +27,19 @@
     <p class="user-bio" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileBio'">
         {{ userDescription() }}
     </p>
-    <span class="heading">API_KEY:</span>
+
+    <div class="info-segment-wrapper"
+        [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileKey'">
+        <span class="info-segment-label">API KEY:</span>
+        @if (this.data.isApiKeyAvailable()) {
+            <span class="info-segment-value">AVAILABLE</span>
+        } @else {
+            <span class="info-segment-value">NOT AVAILABLE</span>
+        }
+    </div>
+    <div class="info-segment-wrapper"
+        [class.targeted]="this.lyt.currentlySelectedItem === 'ProfilePath'">
+        <span class="info-segment-label">PATH:</span>
+        <span class="info-segment-value">{{ this.data.scramble_path() }}</span>
+    </div>
 </div>

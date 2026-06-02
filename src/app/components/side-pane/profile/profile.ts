@@ -26,7 +26,9 @@ export class ProfileComponent {
   readonly _grid: MoveGrid = [
     ["ProfileAvatar"],
     ["ProfileName"],
-    ["ProfileBio"]
+    ["ProfileBio"],
+    ["ProfileKey"],
+    ["ProfilePath"]
   ];
 
   constructor() {

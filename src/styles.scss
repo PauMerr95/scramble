@@ -1,6 +1,20 @@
 *{
     margin: 0;
     padding: 0;
+
+    --color-std-50:  #f9fee7;
+    --color-std-100: #f3fdce;
+    --color-std-200: #e7fb9d;
+
+    --color-std-300: #daf96c;
+    --color-std-400: #cef73b;
+    --color-std-500: #c2f50a;
+    --color-std-600: #9bc408;
+
+    --color-std-700: #749306;
+    --color-std-800: #4e6204;
+    --color-std-900: #273102;
+    --color-std-950: #1b2201;
 }
 html, body {
     height: 100dvh;
@@ -21,3 +35,6 @@ body {
 app-root {
     height: 100%;
 }
+
+
+

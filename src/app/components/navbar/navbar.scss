@@ -6,8 +6,8 @@ nav {
     align-items: center;
     justify-content: start;
 
-    color: var(--nav-fg, #FAF0E6);
-    background: var(--nav-bg, #424263);
+    color:      var(--color-std-200, #E7FB9D);
+    background: var(--color-std-900, #1B2201);
 
     border-radius: 5px;
 }
@@ -32,12 +32,12 @@ li {
 }
 
 .navbar-icon.active {
-    background-color: #C0E1EC;
+    background-color: var(--color-std-500, #C2F50A);
     opacity: 1;
 }
 
 .navbar-icon:hover {
-    background-color: #1d8284;
-    color: var(--seq-fg, black);
+    background-color: var(--color-std-700, #4E6204);
+    color: var(--color-std-50, #F9FEE7);
     cursor: pointer;
 }

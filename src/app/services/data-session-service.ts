@@ -1,6 +1,7 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { CursorPos, FastaRecord, FilePath, Result, SearchResult } from '../types/main_types';
 import { LINE_WIDTH } from './sequence-viewer-service';
+import { UserDataService } from './user-data';
 
 const DUMMY_SEQUENCE = `>DUMMY_ACE2 Homo sapiens ACE2 gene fragment [demo]
 ATGTCAAGCTCTTCCTGGCTCCTTCTCAGCCTTGTTGCTGTAACTAAAACGGAAGTTTATAAACATCATC
@@ -16,7 +17,13 @@ GCAGCAGCAGCAGCAGCAGCAATACCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGC`;
   providedIn: 'root',
 })
 export class DataSessionService {
-  readonly loadedFastas = signal<FastaRecord[]>([]);
+  readonly userData = inject(UserDataService);
+
+  readonly userName          = computed<string>(()  => this.userData.getUserName());
+  readonly isApiKeyAvailable = computed<boolean>(() => this.userData.getApiKey() !== null);
+  readonly scramble_path     = computed<string>(()  => this.userData.getHomePath());
+  readonly loadedFastas      = signal<FastaRecord[]>([]);
+
 
   constructor() {
     this.parseFasta(DUMMY_SEQUENCE);
