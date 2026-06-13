@@ -41,7 +41,7 @@ import { Color } from '../../../types/main_types';
       color: inherit;
       background: inherit;
       border: 0;
-      font-family: 'Fira Mono', 'Cascadia Code', 'Jetbrains Mono', 'Ubuntu Mono', 'SF Mono', 'Consolas';
+      font-family: inherit;
       font-size: 16px;
       padding-bottom: 2px;
     }
