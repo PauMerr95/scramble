@@ -1,5 +1,5 @@
 <div class="profile-wrapper">
-    <div class="profile-picture-wrapper" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileAvatar'">
+    <div class="profile-picture-wrapper" [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileAvatar'">
             @if (chosenProfilePicture() === "Bird") {
                 <app-avatar-bird></app-avatar-bird>
             }
@@ -20,16 +20,16 @@
             }
     </div>
 
-    <span class="user-name" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileName'">
+    <span class="user-name" [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileName'">
         {{ userName() }}
     </span>
     <span class="heading">About:</span>
-    <p class="user-bio" [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileBio'">
+    <p class="user-bio" [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileBio'">
         {{ userDescription() }}
     </p>
 
     <div class="info-segment-wrapper"
-        [class.targeted]="this.lyt.currentlySelectedItem === 'ProfileKey'">
+        [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileKey'">
         <span class="info-segment-label">API KEY:</span>
         @if (this.data.isApiKeyAvailable()) {
             <span class="info-segment-value">AVAILABLE</span>
@@ -38,7 +38,7 @@
         }
     </div>
     <div class="info-segment-wrapper"
-        [class.targeted]="this.lyt.currentlySelectedItem === 'ProfilePath'">
+        [class.targeted]="this.lyt.currentlyTargeted() === 'ProfilePath'">
         <span class="info-segment-label">PATH:</span>
         <span class="info-segment-value">{{ this.data.scramble_path() }}</span>
     </div>

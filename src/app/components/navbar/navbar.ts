@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IconFolder } from "../icons/folder";
 import { IconSearchDB } from "../icons/db_search";
 import { IconProfile } from "../icons/profile";
-import { NavbarLocation } from '../../types/navbar_locations';
+import { NavbarLocation } from '../../types/location_types';
 import { Color } from "../../types/main_types"
 
 @Component({

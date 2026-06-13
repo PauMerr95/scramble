@@ -1,5 +1,5 @@
 import { Component, computed, effect, signal } from '@angular/core';
-import { GENOME_QUERY_OPTS, SelectectableQueryBy, RetrieveRoster, SelectectableRetrieve } from '../../../side_types';
+import { GENOME_QUERY_OPTS, SelectectableQueryBy, RetrieveRoster, SelectectableRetrieve } from '../../../../types/side_types';
 
 @Component({
   selector: 'app-query-genome-page',

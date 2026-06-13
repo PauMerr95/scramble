@@ -4,7 +4,7 @@ import { EditorMode } from '../../types/main_types';
 import { LayoutService } from '../../services/layout-service';
 import { ProfileComponent } from './profile/profile';
 import { CmdLineService } from '../../services/cmd-line-service';
-import { Query } from './query/query/query';
+import { Query } from './query/query';
 
 @Component({
   selector: 'app-side-pane',

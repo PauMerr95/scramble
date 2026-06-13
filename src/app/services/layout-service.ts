@@ -1,6 +1,6 @@
-import { Injectable, signal } from '@angular/core';
-import { NavbarLocation, FocusLocation } from '../types/navbar_locations';
-import { MoveGrid } from '../components/side-pane/side_types';
+import { computed, Injectable, signal } from '@angular/core';
+import { NavbarLocation, FocusLocation, QueryState } from '../types/location_types';
+import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
 
 @Injectable({
@@ -8,13 +8,19 @@ import { CursorPos } from '../types/main_types';
 })
 export class LayoutService {
   private _sidePaneState = signal<NavbarLocation>("Hidden");
+  private _queryState = signal<QueryState>("QueryMain");
   private _currentFocus = signal<FocusLocation | null>(null);
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
 
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
+  readonly queryState = this._queryState.asReadonly();
 
+  currentlyTargeted(): null | SelectableLocation{
+    if (!this._currentMoveGrid() || !this._selector()) return null;
+    return this._currentMoveGrid()![this._selector()!.row][this._selector()!.col];
+  }
 
   toggleSidePane(location: NavbarLocation) {
     this._sidePaneState.update((currState) => {
@@ -37,23 +43,19 @@ export class LayoutService {
     this._currentMoveGrid.set(null);
   }
 
-  get currentlySelectedItem() {
-    if (!this._currentMoveGrid() || !this._selector()) return null;
-    return this._currentMoveGrid()![this._selector()!.row][this._selector()!.col];
-  }
   moveDown() { 
     if (!this._currentMoveGrid() || !this._selector()) return;
     if (this._selector()!.row >= this._currentMoveGrid()!.length - 1) return;
     this._selector()!.row++;
     this.checkColumn();
-    console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col}, Target: ${String(this.currentlySelectedItem)}`);
+    console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col}, Target: ${String(this.currentlyTargeted())}`);
   }
   moveUp() { 
     if (!this._currentMoveGrid() || !this._selector()) return;
     if (this._selector()!.row <= 0) return;
     this._selector()!.row--;
     this.checkColumn();
-    console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col}, Target: ${String(this.currentlySelectedItem)}`);
+    console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col}, Target: ${String(this.currentlyTargeted())}`);
   }
   moveLeft() {
     if (!this._currentMoveGrid() || !this._selector()) return;
@@ -72,5 +74,8 @@ export class LayoutService {
     if (this._selector()!.col > maxCol) {
       this._selector()!.col = maxCol;
     }
+  }
+  changeQueryState(newState: QueryState) {
+    this._queryState.set(newState);
   }
 }

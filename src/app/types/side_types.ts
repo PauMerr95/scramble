@@ -2,7 +2,8 @@ export type Avatar = "Bird" | "Duck" | "Earth" | "Falling" | "Sheep" | "Squirrel
 export type SelectableLocation = 
     "ProfileAvatar" | "ProfileName" | "ProfileBio" | "ProfileKey" | "ProfilePath" |
     "FileItem" |
-    "QueryGenome" | "QueryGene" | "QueryProkaryot" | "QueryVirus" | "QueryOrganelle";
+    "IconQueryGenome" | "IconQueryGene" | "IconQueryProkaryot" | "IconQueryVirus" | "IconQueryOrganelle" |
+    "InputQueryOptGenome";
 
 export const GENOME_QUERY_OPTS = [
     "Genome Assembly Accession",

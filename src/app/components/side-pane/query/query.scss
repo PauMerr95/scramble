@@ -1,11 +1,11 @@
-.router-wrapper {
+.query-wrapper {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
-.router-button {
+.query-button {
     width: 35px;
     height: 35px;
     padding: 0.2em;
@@ -13,8 +13,8 @@
     background-color: var(--color-std-950, #1b2201);
     border-radius: 0.6em;
 }
-.router-button:hover {
-    background: var(--color-std-600);
+.query-button:hover {
+    background: var(--color-std-600, #9bc408);
     cursor: pointer;
 }
 .query-icon {
@@ -26,7 +26,7 @@
     width: 100%;
     object-fit: cover;
 }
-.active-route{
+.query-button.active{
     background-color: #FAF0E6;
     border: 2px solid var(--color-std-600, #C2F50A);
 } 
