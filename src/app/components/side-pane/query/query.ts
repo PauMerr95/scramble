@@ -11,7 +11,8 @@ import { QueryGenePage } from './query-gene-page/query-gene-page';
 import { QueryProkaryotPage } from './query-prokaryot-page/query-prokaryot-page';
 import { QueryVirusPage } from './query-virus-page/query-virus-page';
 import { QueryOrganellePage } from './query-organelle-page/query-organelle-page';
-import { profileGrid } from '../../../move-grids/mv-grids-sidePane';
+import { queryGenomeGrid, queryMainGrid, queryGeneGrid,
+         queryProkaryotGrid, queryVirusGrid, queryOrganelleGrid } from '../../../move-grids/mv-grids-sidePane';
 
 @Component({
   selector: 'app-query',
@@ -36,19 +37,19 @@ export class Query {
       if (this.lyt.sidePaneState() !== "Query") {
         setTimeout(this.resetQueryWindow, 5000);
       }
-      switch (this.lyt.queryState()) {
-        case 'Genome':
-        case 'Gene':
-        case 'Prokaryot':
-        case 'Virus':
-        case 'Organelle':
-        case 'QueryMain':
+      switch (this.lyt.queryPage()) {
+        case 'Genome':    this.lyt.loadGrid(queryGenomeGrid);     break;
+        case 'Gene':      this.lyt.loadGrid(queryGeneGrid);       break;
+        case 'Prokaryot': this.lyt.loadGrid(queryProkaryotGrid);  break;
+        case 'Virus':     this.lyt.loadGrid(queryVirusGrid);      break;
+        case 'Organelle': this.lyt.loadGrid(queryOrganelleGrid);  break;
+        case 'QueryMain': this.lyt.loadGrid(queryMainGrid);       break;
       }
     });
   }
 
    resetQueryWindow = () => {
-    if (this.lyt.sidePaneState() !== "Query") this.lyt.changeQueryState("QueryMain");
+    if (this.lyt.sidePaneState() !== "Query") this.lyt.changeQueryPage("QueryMain");
    }
 
 

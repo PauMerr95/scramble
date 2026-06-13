@@ -43,6 +43,7 @@ export class SidePane {
       case 'k': case 'ArrowUp':    this.lyt.moveUp();    break;
       case 'h': case 'ArrowLeft':  this.lyt.moveLeft();  break;
       case 'l': case 'ArrowRight': this.lyt.moveRight(); break;
+      case 'Enter': this.lyt.handleEnter() ; break;
     }
     e.preventDefault();
   }

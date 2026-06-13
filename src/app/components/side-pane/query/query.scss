@@ -30,7 +30,8 @@
     background-color: #FAF0E6;
     border: 2px solid var(--color-std-600, #C2F50A);
 } 
-.selected{
-    box-shadow: 0  5px 0 13px var(--color-std-600, #9bc408),
-                0 -5px 0 13px var(--color-std-600, #9bc408);
+.query-button.targeted{
+    box-shadow: 0  5px 5px 0px var(--color-std-600, #9bc408),
+                0 -5px 5px 0px var(--color-std-600, #9bc408);
+    border: 2px solid var(--color-std-500);
 }
