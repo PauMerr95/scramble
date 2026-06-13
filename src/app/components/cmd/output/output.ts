@@ -11,7 +11,7 @@ import { CmdOutputType } from '../../../types/cmd_types';
       color: #FF6969;
     }
     .Neutral {
-      color: #FFFFFF;
+      color: inherit;
     }
     .Success {
       color: #55dc48;

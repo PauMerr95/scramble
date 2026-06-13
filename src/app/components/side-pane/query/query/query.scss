@@ -10,11 +10,11 @@
     height: 35px;
     padding: 0.2em;
     border: none;
-    background-color: #1f2937;
+    background-color: var(--color-std-950, #1b2201);
     border-radius: 0.6em;
 }
 .router-button:hover {
-    background-color: #1d8284;
+    background: var(--color-std-600);
     cursor: pointer;
 }
 .query-icon {
@@ -28,9 +28,9 @@
 }
 .active-route{
     background-color: #FAF0E6;
-    border: 2px solid gold;
+    border: 2px solid var(--color-std-600, #C2F50A);
 } 
 .selected{
-    box-shadow: 0  5px 0 13px #41d0d3,
-                0 -5px 0 13px #41d0d3;
+    box-shadow: 0  5px 0 13px var(--color-std-600, #9bc408),
+                0 -5px 0 13px var(--color-std-600, #9bc408);
 }

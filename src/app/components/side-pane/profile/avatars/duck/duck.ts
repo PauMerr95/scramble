@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
      width: 100px;
      height: 100px;
 
-     border: 5px solid rgb(155, 155, 249);
+     border: 5px solid var(--color-std-500, #cef73b);
      border-radius: 50%;
 
      display: flex;

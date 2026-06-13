@@ -38,8 +38,8 @@ import { Color } from '../../../types/main_types';
     .cmd-input-field {
       width: 100%;
       max-height: 20px;
-      color: var(--cmd-fg, #FFFFFF);
-      background: var(--cmd-bg, #181825);
+      color: inherit;
+      background: inherit;
       border: 0;
       font-family: 'Fira Mono', 'Cascadia Code', 'Jetbrains Mono', 'Ubuntu Mono', 'SF Mono', 'Consolas';
       font-size: 16px;

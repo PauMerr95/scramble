@@ -11,22 +11,22 @@
 }
 
 .profile-picture-wrapper.targeted {
-    box-shadow: 0 0 15px 10px #1d8284;
+    box-shadow: 0 0 15px 10px var(--color-std-600, #9bc408);
     border-radius: 50%;
 }
 
 .user-name.targeted{
-    box-shadow: 0 3px 10px 0 #1d8284,
-                0 -3px 10px 0 #1d8284;
+    box-shadow: 0 3px 10px 0 var(--color-std-600, #9bc408),
+                0 -3px 10px 0 var(--color-std-600, #9bc408);
 }
 
 .user-bio.targeted {
-    box-shadow: 0 3px 10px 0 #1d8284,
-                0 -3px 10px 0 #1d8284;
+    box-shadow: 0 3px 10px 0 var(--color-std-600, #9bc408),
+                0 -3px 10px 0 var(--color-std-600, #9bc408);
 }
 .info-segment-wrapper.targeted{
-    box-shadow: 0 3px 10px 0 #1d8284,
-                0 -3px 10px 0 #1d8284;
+    box-shadow: 0 3px 10px 0 var(--color-std-600, #9bc408),
+                0 -3px 10px 0 var(--color-std-600, #9bc408);
 }
 
 .heading {
@@ -40,9 +40,9 @@
     font-weight: bold;
     text-align: center;
 
-    background-color: azure;
-    border-top: 2px solid rgb(155, 155, 249);
-    border-bottom: 2px solid rgb(155, 155, 249);
+    background-color: var(--color-std-700, #749306);
+    border-top: 2px solid var(--color-std-400, #cef73b);
+    border-bottom: 2px solid var(--color-std-400, #cef73b);
 }
 
 .info-segment-wrapper {
@@ -53,9 +53,9 @@
     width: 100%;
     gap: 4px;
     font-size: 11px;
-    background-color: azure;
-    border-top: 1px dashed rgb(188, 188, 255);
-    border-bottom: 1px dashed rgb(188, 188, 255);
+    background-color: var(--color-std-700, #749306);
+    border-top: 1px dashed var(--color-std-400, #cef73b);
+    border-bottom: 1px dashed var(--color-std-400, #cef73b);
     border-radius: 5px;
 }
 .info-segment-label {

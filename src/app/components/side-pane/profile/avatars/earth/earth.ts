@@ -11,20 +11,11 @@ import { Component } from '@angular/core';
      width: 100px;
      height: 100px;
 
-     border: 5px solid rgb(155, 155, 249);
+     border: 5px solid var(--color-std-500, #cef73b);
      border-radius: 50%;
 
      display: flex;
      overflow: auto;
-   }
-   :host.targeted {
-     display: flex;
-     flex-direction: column;
-     justify-content: center;
-     align-items: center;
-
-     box-shadow: 0 0 15px 10px #1d8284;
-     border-radius: 50%;
    }
   `,
 })

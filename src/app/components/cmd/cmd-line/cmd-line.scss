@@ -6,13 +6,13 @@
     align-items: stretch;
     justify-content: center;
 
-    color: var(--cmd-fg, #cdd6f4);
-    background: var(--cmd-bg, #181825);
+    background: var(--color-std-1000, #090f0a);
+    color:      var(--color-std-200, #E7FB9D);
     border-radius: 5px;
     margin-right: 0.4rem;
     padding-left: 1rem;
     padding-right: 1rem;
 
-    font-family: 'Cascadia Code', 'Fira Mono', 'Jetbrains Mono', 'Ubuntu Mono', 'SF Mono', 'Consolas';
+    font-family: 'Shantell Sans', 'Ubuntu Mono', 'SF Mono', 'Consolas';
     font-size: 16px;
 }

@@ -10,9 +10,9 @@
     font-weight: bold;
     text-align: center;
 
-    background-color: azure;
-    border-top: 2px solid rgb(155, 155, 249);
-    border-bottom: 2px solid rgb(155, 155, 249);
+    background-color: var(--color-std-700, #749306);
+    border-top: 2px solid var(--color-std-400, #cef73b);
+    border-bottom: 2px solid var(--color-std-400, #cef73b);
 }
 
 select {
@@ -33,11 +33,11 @@ select {
 }
 
 .btn-query {
-  background-color: #fbeee0;
-  border: 2px solid #422800;
+  background-color: var(--color-std-900, #273102);
+  border: 2px solid var(--color-std-400, #cef72b);
   border-radius: 30px;
-  box-shadow: #422800 4px 4px 0 0;
-  color: #422800;
+  box-shadow: var(--color-std-400, #cef72b) 4px 4px 0 0;
+  color: var(--color-std-100, #f3fdce);
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
@@ -52,11 +52,12 @@ select {
 }
 
 .btn-query:hover {
-  background-color: #fff;
+  color: var(--color-std-900, #273102);
+  background-color: var(--color-std-100, #f3fdce);
 }
 
 .btn-query:active {
-  box-shadow: #422800 2px 2px 0 0;
+  box-shadow: var(--color-std-400, #cef72b) 2px 2px 0 0;
   transform: translate(2px, 2px);
 }
 

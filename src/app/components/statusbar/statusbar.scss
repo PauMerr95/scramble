@@ -3,11 +3,10 @@
     align-items: center;
     gap: 16px;
     padding: 5px 12px;
-    background: var(--sb-bg, #181825);
-    border-top: 1px solid var(--sb-border, #313244);
+    background: var(--color-std-950, #1B2201);
+    color:      var(--color-std-200, #E7FB9D);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    color: var(--sb-text, #a6adc8);
     user-select: none;
     margin-right: 0.4rem;
     border-radius: 5px;
@@ -27,7 +26,7 @@
 .mode-badge[data-mode="Visual"]  { background-color: #E29BE9; color: black;}
 
 .header-label {
-    color: var(--sb-muted, #989bad);
+    color: var(--color-std-100, #f9fee7);
     font-size: 10px;
     max-width: 320px;
     overflow: hidden;
@@ -43,8 +42,6 @@
     gap: 4px;
 }
 .stat-value {
-    color: var(--sb-text, #cdd6f4);
+    color: var(--color-std-100, #f9fee7);
     font-weight: 600;
 }
-
-.sel-stat .stat-value { color: #cba6f7; }
