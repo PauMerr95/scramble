@@ -19,4 +19,5 @@ import { Component } from '@angular/core';
    }
   `,
 })
-export class AvatarSheep {}
+export class AvatarSheep {
+}

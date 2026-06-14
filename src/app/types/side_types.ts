@@ -1,4 +1,6 @@
-export type Avatar = "Bird" | "Duck" | "Earth" | "Falling" | "Sheep" | "Squirrel";
+export const avatars = ["Bird", "Duck", "Earth", "Falling", "Sheep", "Squirrel"]
+export type Avatar = typeof avatars[number];
+
 export type SelectableLocation = 
     "ProfileAvatar" | "ProfileName" | "ProfileBio" | "ProfileKey" | "ProfilePath" |
     "FileItem" |

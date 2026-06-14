@@ -1,3 +1,5 @@
+import { Route } from "@angular/router";
+
 export type NavbarLocation = "Profile" | "Files" | "Query" | "Hidden";
 export type FocusLocation = "MainPane" | "Navbar" | "SidePane" | "CmdLine";
 export type QueryPage = "Genome" | "Gene" | "Prokaryot" | "Virus" | "Organelle" | "QueryMain";
@@ -8,3 +10,7 @@ export interface NotificationObject {
     message: string
 }
 export type ActiveNotification = NotificationObject & { id: number };
+export interface ModalObject {
+    title: string,
+    route: string
+}

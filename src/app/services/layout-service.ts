@@ -1,7 +1,9 @@
-import { Injectable, signal } from '@angular/core';
-import { NavbarLocation, FocusLocation, QueryPage, NotificationObject, ActiveNotification } from '../types/layout_types';
+import { Injectable, signal, inject } from '@angular/core';
+import { NavbarLocation, FocusLocation, QueryPage, NotificationObject, ActiveNotification, ModalObject } from '../types/layout_types';
 import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
+import { Router } from '@angular/router';
+import { Avatar } from '../types/side_types';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +14,13 @@ export class LayoutService {
   private _currentFocus = signal<FocusLocation | null>(null);
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
+  private readonly _router = inject(Router);
 
   private _notificationIDCounter = 0;
   private _notificationQueue = signal<NotificationObject[]>([])
   readonly activeNotifications = signal<ActiveNotification[]>([])
-
-  // readonly activeModal        = signal<null>(null);
+  readonly activeModal = signal<ModalObject | null>(null);
+  readonly activeAvatar = signal<Avatar>("Sheep");
 
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
@@ -29,7 +32,7 @@ export class LayoutService {
     const q = this._notificationQueue();
     const add = q.slice(0, openSlots).map(n => ({...n, id: this._notificationIDCounter++}))
     this._notificationQueue.update(q => q.slice(add.length));
-    this.activeNotifications.update(active => [...active, ...add])
+    this.activeNotifications.update(active => [...active, ...add]);
   }
 
   currentlyTargeted(): null | SelectableLocation{
@@ -160,9 +163,16 @@ export class LayoutService {
         case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
       }
     }
+    if (this._sidePaneState() === "Profile") {
+      switch (this.currentlyTargeted()){
+        case "ProfileAvatar":
+          this.openModal({title: "Avatar Selection", route: 'modal/avatars'});
+      }
+    }
   }
 
   notify(notification: NotificationObject){
+    console.log(`Triggering notification => kind: ${notification.kind} | message: ${notification.message}`);
     this._notificationQueue.update((q) => [...q, notification]);
     this._drainQueue();
   }
@@ -172,5 +182,14 @@ export class LayoutService {
       active => active.filter(notification => notification.id != id)
     );
     this._drainQueue();
+  }
+
+  openModal(modal: ModalObject) {
+    this.activeModal.set(modal);
+    this._router.navigateByUrl(modal.route);
+  }
+  closeModal(){
+    this.activeModal.set(null);
+    this._router.navigateByUrl('/');
   }
 }

@@ -1,26 +1,26 @@
 <div class="profile-wrapper">
-    <div class="profile-picture-wrapper" [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileAvatar'">
-            @if (chosenProfilePicture() === "Bird") {
+    <div class="profile-picture-wrapper" [class.targeted]="lyt.currentlyTargeted() === 'ProfileAvatar'">
+            @if (lyt.activeAvatar() === "Bird") {
                 <app-avatar-bird></app-avatar-bird>
             }
-            @if (chosenProfilePicture() === "Duck") {
+            @if (lyt.activeAvatar() === "Duck") {
                 <app-avatar-duck></app-avatar-duck>
             }
-            @if (chosenProfilePicture() === "Sheep") {
+            @if (lyt.activeAvatar() === "Sheep") {
                 <app-avatar-sheep></app-avatar-sheep>
             }
-            @if (chosenProfilePicture() === "Earth") {
+            @if (lyt.activeAvatar() === "Earth") {
                 <app-avatar-earth></app-avatar-earth>
             }
-            @if (chosenProfilePicture() === "Falling") {
+            @if (lyt.activeAvatar() === "Falling") {
                 <app-avatar-falling></app-avatar-falling>
             }
-            @if (chosenProfilePicture() === "Squirrel") {
+            @if (lyt.activeAvatar() === "Squirrel") {
                 <app-avatar-squirrel></app-avatar-squirrel>
             }
     </div>
 
-    <span class="user-name" [class.targeted]="this.lyt.currentlyTargeted() === 'ProfileName'">
+    <span class="user-name" [class.targeted]="lyt.currentlyTargeted() === 'ProfileName'">
         {{ userName() }}
     </span>
     <span class="heading">About:</span>

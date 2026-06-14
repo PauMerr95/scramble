@@ -17,7 +17,6 @@ import { profileGrid } from '../../../move-grids/mv-grids-sidePane';
   styleUrl: './profile.scss',
 })
 export class ProfileComponent {
-  readonly chosenProfilePicture = signal<Avatar>("Sheep");
   readonly userName = signal<string>("Test User");
   readonly userDescription = signal<string>("I am a test user and I like long walks on the beach.");
 

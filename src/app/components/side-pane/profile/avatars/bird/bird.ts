@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
      border: 5px solid var(--color-std-500, #cef73b);
      border-radius: 50%;
 
-     display: flex;
+     display: block;
      overflow: auto;
    }
   `,

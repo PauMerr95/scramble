@@ -1,4 +1,4 @@
-import { Component, signal, inject, effect, ViewChild, ElementRef, input, viewChild } from '@angular/core';
+import { Component, inject, ElementRef, input, viewChild } from '@angular/core';
 import { ActiveNotification } from '../../../types/layout_types';
 import { LayoutService } from '../../../services/layout-service';
 
