@@ -28,4 +28,8 @@
         <app-cmd-line></app-cmd-line>
     </div>
 
+<div class="notification-stack">
+    @for (notif of this.layout.activeNotifications(); track notif.id) {
+        <app-notification [notification]="notif"></app-notification>
+    }
 </div>

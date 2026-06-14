@@ -82,7 +82,11 @@ export class CmdLineService {
   private readonly leaderCmds: Record<string, Command> = {
     p: () => this.layoutService.toggleSidePane("Profile"),
     f: () => this.layoutService.toggleSidePane("Files"),
-    q: () => this.layoutService.toggleSidePane("Query")
+    q: () => this.layoutService.toggleSidePane("Query"),
+    n: () => {
+      this.layoutService.dismissNotification(this.layoutService.activeNotifications()[0]?.id)
+      this.layoutService.focusOn("MainPane");
+    }
   };
   private readonly executeCmds: Record<string, Command> = {
     getJoke: () => {

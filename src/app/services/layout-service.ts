@@ -1,5 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
-import { NavbarLocation, FocusLocation, QueryPage } from '../types/location_types';
+import { Injectable, signal } from '@angular/core';
+import { NavbarLocation, FocusLocation, QueryPage, NotificationObject, ActiveNotification } from '../types/layout_types';
 import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
 
@@ -13,9 +13,24 @@ export class LayoutService {
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
 
+  private _notificationIDCounter = 0;
+  private _notificationQueue = signal<NotificationObject[]>([])
+  readonly activeNotifications = signal<ActiveNotification[]>([])
+
+  // readonly activeModal        = signal<null>(null);
+
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
   readonly queryPage = this._queryPage.asReadonly();
+
+  private _drainQueue() {
+    const openSlots = 4 - this.activeNotifications().length;
+    if (openSlots <= 0) return;
+    const q = this._notificationQueue();
+    const add = q.slice(0, openSlots).map(n => ({...n, id: this._notificationIDCounter++}))
+    this._notificationQueue.update(q => q.slice(add.length));
+    this.activeNotifications.update(active => [...active, ...add])
+  }
 
   currentlyTargeted(): null | SelectableLocation{
     if (!this._currentMoveGrid() || !this._selector()) return null;
@@ -145,5 +160,17 @@ export class LayoutService {
         case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
       }
     }
+  }
+
+  notify(notification: NotificationObject){
+    this._notificationQueue.update((q) => [...q, notification]);
+    this._drainQueue();
+  }
+
+  dismissNotification(id: number) {
+    this.activeNotifications.update(
+      active => active.filter(notification => notification.id != id)
+    );
+    this._drainQueue();
   }
 }

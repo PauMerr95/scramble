@@ -26,6 +26,22 @@
     --seq-cursor-bg: #cdd6f4;
     --seq-cursor-fg: #1e1e2e;
     --seq-select-bg: rgba(137, 180, 250, 0.25);
+
+    --color-info-bg:#CCE0FF;
+    --color-info-fg:#002966;
+    --color-info-hl:#66A3FF;
+
+    --color-warn-fg:#ff8800;
+    --color-warn-bg:#FEEECD;
+    --color-warn-hl:#FDBA35;
+
+    --color-error-fg: #c90348;
+    --color-error-bg: #ffe6ee;
+    --color-error-hl: #fd68a1;
+
+    --color-succ-bg: #A8FF99;
+    --color-succ-fg: #179900;
+    --color-succ-hl: #26FF00;
 }
 html, body {
     height: 100dvh;
