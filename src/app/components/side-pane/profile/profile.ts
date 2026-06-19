@@ -9,10 +9,12 @@ import { AvatarSheep } from './avatars/sheep/sheep';
 import { LayoutService } from '../../../services/layout-service';
 import { DataSessionService } from '../../../services/data-session-service';
 import { profileGrid } from '../../../move-grids/mv-grids-sidePane';
+import { DropDown } from "../../util/drop-down/drop-down";
+
 
 @Component({
   selector: 'app-profile',
-  imports: [AvatarSheep, AvatarFalling, AvatarEarth, AvatarSquirrel, AvatarBird, AvatarDuck],
+  imports: [AvatarSheep, AvatarFalling, AvatarEarth, AvatarSquirrel, AvatarBird, AvatarDuck, DropDown, DropDown],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
@@ -22,6 +24,8 @@ export class ProfileComponent {
 
   readonly lyt = inject(LayoutService);
   readonly data = inject(DataSessionService);
+  
+  readonly availableThemes = ["DarkLime", "Ocean"];
 
   
   constructor() {

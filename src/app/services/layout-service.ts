@@ -4,6 +4,7 @@ import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
 import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
+import { Theme } from '../types/layout_types';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,16 @@ export class LayoutService {
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
   readonly queryPage = this._queryPage.asReadonly();
+
+  readonly currentTheme = signal<Theme>("DarkLime");
+
+  updateTheme(){
+    this.notify({
+      kind: "Info",
+      message: `Theme update triggered: ${this.currentTheme()}`
+    });
+    //TODO: Implement
+  }
 
   private _drainQueue() {
     const openSlots = 4 - this.activeNotifications().length;

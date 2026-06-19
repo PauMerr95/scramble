@@ -42,4 +42,13 @@
         <span class="info-segment-label">PATH:</span>
         <span class="info-segment-value">{{ this.data.scramble_path() }}</span>
     </div>
+
+    <label for="drop-down-themes">Theme:</label>
+    <app-drop-down
+        id="drop-down-themes"
+        title="profile-themes"
+        [optionList]="availableThemes"
+        [(activeOption)]="lyt.currentTheme"
+        (changedOption)="lyt.updateTheme()"
+    ></app-drop-down>
 </div>

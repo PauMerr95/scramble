@@ -1,4 +1,4 @@
-import { Component, signal, inject, HostListener } from '@angular/core';
+import { Component, signal, inject, HostListener, effect } from '@angular/core';
 import { Navbar } from "./components/navbar/navbar";
 import { SidePane } from "./components/side-pane/side-pane";
 import { MainPane } from "./components/main-pane/main-pane";
@@ -22,7 +22,7 @@ export class App {
   protected readonly motion = inject(MotionService)
 
   activeMode: EditorMode = "Normal";
-
+  
   switchMode(mode: EditorMode) {
     this.activeMode = mode;
   }

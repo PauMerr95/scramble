@@ -3,6 +3,7 @@ import { Route } from "@angular/router";
 export type NavbarLocation = "Profile" | "Files" | "Query" | "Hidden";
 export type FocusLocation = "MainPane" | "Navbar" | "SidePane" | "CmdLine";
 export type QueryPage = "Genome" | "Gene" | "Prokaryot" | "Virus" | "Organelle" | "QueryMain";
+export type Theme = "DarkLime" | "Ocean";
 
 export type NotificationType = "Info" | "Warn" | "Error" | "Success";
 export interface NotificationObject {
