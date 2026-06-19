@@ -23,7 +23,7 @@ import { Color } from '../../../types/main_types';
     @if (this.cli.cmdInputType() === "Search") {
       <app-icon-search class="icon" svg_color="#94ff8c"></app-icon-search>
     }
-    <input #cmdInput class='cmd-input-field' type=text (keydown)="onKey($event)"/>
+    <input #cmdInput class='cmd-input-field' type=text [value]="cli.cmdInput()"/>
   `,
   styles: `
     :host {
@@ -73,30 +73,5 @@ export class CmdInput {
         this._inputRef().nativeElement.value = '';
       }
     });
-  }
-
-  onKey(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
-      this.cli.abort();
-    }
-    if (e.key === "Enter") {
-      this.cli.cmdInput.set(this._inputRef().nativeElement.value);
-      if (this.cli.cmdInputType() === "Search") {
-        this.cli.checkSearch();
-        return;
-      }
-      // cmdInputType === Command
-      this.cli.checkCommand();
-      return;
-    }
-    console.log(`This cmdInput = ${this.cli.cmdInput()}`);
-    if (this.cli.cmdInputType() === "Leader") {
-      this.cli.cmdInput.update(cmd => {
-        return (cmd) ? (cmd + e.key) : e.key;
-      });
-      const result = this.cli.checkLeader();
-      if (result === "Success") this._inputRef().nativeElement.value = '';
-      return;
-    }
   }
 }

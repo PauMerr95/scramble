@@ -31,20 +31,4 @@ export class SidePane {
     });
   }
 
-  @HostListener('keydown', ['$event'])
-  onKeyDown(e: KeyboardEvent){
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-    switch(e.key){
-      case ' ':
-        this.lyt.focusOn("CmdLine");
-        this.cli.handleInput("Leader");
-        break;
-      case 'j': case 'ArrowDown':  this.lyt.moveDown();  break;
-      case 'k': case 'ArrowUp':    this.lyt.moveUp();    break;
-      case 'h': case 'ArrowLeft':  this.lyt.moveLeft();  break;
-      case 'l': case 'ArrowRight': this.lyt.moveRight(); break;
-      case 'Enter': this.lyt.handleEnter() ; break;
-    }
-    e.preventDefault();
-  }
 }

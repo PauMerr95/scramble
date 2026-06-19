@@ -1,9 +1,9 @@
-<div class="app-wrapper" [class.hidden]="layout.sidePaneState() === 'Hidden'">
+<div class="app-wrapper" [class.hidden]="lyt.sidePaneState() === 'Hidden'">
 
     <div class="navbar-port">
         <app-navbar
-        (toggleSidePane)="layout.toggleSidePane($event)"
-        [activeIcon]="layout.sidePaneState()">
+        (toggleSidePane)="lyt.toggleSidePane($event)"
+        [activeIcon]="lyt.sidePaneState()">
         </app-navbar>
     </div>
 
@@ -11,10 +11,10 @@
         <app-main-pane></app-main-pane>
     </div>
 
-    @if (layout.sidePaneState() !== "Hidden") {
+    @if (lyt.sidePaneState() !== "Hidden") {
     <div class="sidePane-port">
         <app-side-pane
-        (hideSidePane)="layout.toggleSidePane('Hidden')"
+        (hideSidePane)="lyt.toggleSidePane('Hidden')"
         (switchMode)="switchMode($event)">
         </app-side-pane>
     </div>
@@ -30,7 +30,7 @@
 
 <app-modal></app-modal>
 <div class="notification-stack">
-    @for (notif of this.layout.activeNotifications(); track notif.id) {
+    @for (notif of this.lyt.activeNotifications(); track notif.id) {
         <app-notification [notification]="notif"></app-notification>
     }
 </div>

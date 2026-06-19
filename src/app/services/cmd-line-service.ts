@@ -8,8 +8,8 @@ import { LayoutService } from './layout-service';
 })
 export class CmdLineService {
   constructor(
-    private layoutService: LayoutService,
-    private seqviewService: SequenceViewerService) {}
+    private lyt: LayoutService,
+    private sqv: SequenceViewerService) {}
 
   
   readonly cmdInput = signal<string>('');
@@ -26,9 +26,18 @@ export class CmdLineService {
     }
   }
 
+  runInput() {
+    switch(this.cmdInputType()) {
+      case "Search":  this.checkSearch(); break;
+      case "Command": this.checkCommand(); break;
+      case "Leader":  this.checkLeader(); break;
+      default: this.lyt.notify({kind: "Error", message: "Failed to assign Input to InputType (Search, Command, Leader)"})
+    }
+  }
+
   checkSearch(): CmdOutputType {
     const query = this.cmdInput();
-    const isfound = this.seqviewService.search(query);
+    const isfound = this.sqv.search(query);
     this.cmdInput.set('');
     this.cmdInputType.set(null);
 
@@ -38,7 +47,7 @@ export class CmdLineService {
       return "Failure";
     }
     this.cmdOutputType.set("Success");
-    this.cmdOutput.set(`Found ${this.seqviewService.hlAreas().length} instances of '${query}'`)
+    this.cmdOutput.set(`Found ${this.sqv.hlAreas().length} instances of '${query}'`)
     return "Success"
   }
 
@@ -74,25 +83,25 @@ export class CmdLineService {
     if (this.leaderTimeout) clearTimeout(this.leaderTimeout);
     this.cmdInput.set('');
     this.cmdInputType.set(null);
-    this.layoutService.focusOn("MainPane");
+    this.lyt.focusOn("MainPane");
   }
 
   private leaderTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
   private readonly leaderCmds: Record<string, Command> = {
-    p: () => this.layoutService.toggleSidePane("Profile"),
-    f: () => this.layoutService.toggleSidePane("Files"),
-    q: () => this.layoutService.toggleSidePane("Query"),
+    p: () => this.lyt.toggleSidePane("Profile"),
+    f: () => this.lyt.toggleSidePane("Files"),
+    q: () => this.lyt.toggleSidePane("Query"),
     n: () => {
-      this.layoutService.dismissNotification(this.layoutService.activeNotifications()[0]?.id)
-      this.layoutService.focusOn("MainPane");
+      this.lyt.dismissNotification(this.lyt.activeNotifications()[0]?.id)
+      this.lyt.focusOn("MainPane");
     }
   };
   private readonly executeCmds: Record<string, Command> = {
     getJoke: () => {
       this.cmdOutput.set("I can't C# without my glasses.");
       this.cmdOutputType.set("Success");
-      this.layoutService.focusOn("MainPane");
+      this.lyt.focusOn("MainPane");
     }
   };
 }
