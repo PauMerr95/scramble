@@ -1,4 +1,4 @@
-use crate::user::data;
+use crate::user::data::{self, OS, default_config_path, retrieve_os};
 use std::sync::Mutex;
 pub mod user;
 
@@ -17,7 +17,7 @@ pub fn run(user: data::UserInfo) {
       Ok(())
     })
     .manage(data::UserState { data: Mutex::new(user)})
-    .invoke_handler(tauri::generate_handler![get_user_name, get_api_key])
+    .invoke_handler(tauri::generate_handler![get_user_name, get_api_key, get_home_path])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -32,16 +32,8 @@ fn get_api_key(user_state: tauri::State<data::UserState>) -> String {
   user_state.data.lock().unwrap().api_key.clone()
 }
 
-/*
-  #[tauri::command]
-  fn save_user_data(_name: String) -> () {
-    todo!();
-    // update or add username to db
-  }
-
-  #[tauri::command]
-  fn save_api_key(_key: String) -> () {
-    todo!();
-    // update or add API_KEY to env
-  }
-*/
+#[tauri::command]
+fn get_home_path() -> String {
+  let os: OS = user::data::retrieve_os();
+  default_config_path(os).unwrap().to_string_lossy().into_owned()
+}
