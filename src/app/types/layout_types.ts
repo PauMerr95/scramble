@@ -1,5 +1,8 @@
 import { Route } from "@angular/router";
 
+export const modalTitles = [ "AvatarMenu" ]
+export type ModalTitle = typeof modalTitles[number];
+
 export type NavbarLocation = "Profile" | "Files" | "Query" | "Hidden";
 export type FocusLocation = "MainPane" | "Navbar" | "SidePane" | "CmdLine" | "Modal";
 export type QueryPage = "Genome" | "Gene" | "Prokaryot" | "Virus" | "Organelle" | "QueryMain";
@@ -12,6 +15,6 @@ export interface NotificationObject {
 }
 export type ActiveNotification = NotificationObject & { id: number };
 export interface ModalObject {
-    title: string,
+    title: ModalTitle,
     route: string
 }

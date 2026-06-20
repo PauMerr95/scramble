@@ -167,19 +167,25 @@ export class LayoutService {
   }
 
   handleEnter() {
-    if (this._sidePaneState() === "Query") {
-      switch (this.currentlyTargeted()) {
-        case "IconQueryGenome":    this.changeQueryPage("Genome"); break;
-        case "IconQueryGene":      this.changeQueryPage("Gene"); break;
-        case "IconQueryProkaryot": this.changeQueryPage("Prokaryot"); break;
-        case "IconQueryVirus":     this.changeQueryPage("Virus"); break;
-        case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
+    if (this.currentFocus() === "SidePane") {
+      if (this._sidePaneState() === "Query") {
+        switch (this.currentlyTargeted()) {
+          case "IconQueryGenome":    this.changeQueryPage("Genome"); break;
+          case "IconQueryGene":      this.changeQueryPage("Gene"); break;
+          case "IconQueryProkaryot": this.changeQueryPage("Prokaryot"); break;
+          case "IconQueryVirus":     this.changeQueryPage("Virus"); break;
+          case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
+        }
       }
-    }
-    if (this._sidePaneState() === "Profile") {
-      switch (this.currentlyTargeted()){
-        case "ProfileAvatar":
-          this.openModal({title: "Avatar Selection", route: 'modal/avatars'});
+      if (this._sidePaneState() === "Profile") {
+        switch (this.currentlyTargeted()){
+          case "ProfileAvatar":
+            this.openModal({title: "AvatarMenu", route: 'modal/avatars'});
+        }
+      }
+    } else if (this.currentFocus() === "Modal"){
+        switch(this.activeModal()!.title) {
+          case "AvatarMenu": this.activeAvatar.set(this.currentlyTargeted()!); this.closeModal(); break
       }
     }
   }

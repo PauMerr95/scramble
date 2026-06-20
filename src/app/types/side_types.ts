@@ -9,8 +9,6 @@ const selectableLocations: String[] = [
     // -- QUERY --
     "IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle",
     "InputQueryOptGenome",
-    // -- MODAL AVATARS --
-    "ProfileAvatar"
 ]
 export type SelectableLocation = typeof selectableLocations[number] & Avatar;
 
