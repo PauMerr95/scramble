@@ -10,6 +10,7 @@ import { LayoutService } from '../../../services/layout-service';
 import { DataSessionService } from '../../../services/data-session-service';
 import { profileGrid } from '../../../move-grids/mv-grids-sidePane';
 import { DropDown } from "../../util/drop-down/drop-down";
+import { UserDataService } from '../../../services/user-data';
 
 
 @Component({
@@ -24,13 +25,15 @@ export class ProfileComponent {
 
   readonly lyt = inject(LayoutService);
   readonly data = inject(DataSessionService);
+  readonly user = inject(UserDataService);
   
   readonly availableThemes = ["DarkLime", "Ocean"];
 
   
   constructor() {
     effect(() => {
-      if (this.lyt.sidePaneState() === "Profile") {
+      if (this.lyt.currentFocus() === "SidePane" 
+          && this.lyt.sidePaneState() === "Profile") {
         this.lyt.loadGrid(profileGrid);
       }
     });

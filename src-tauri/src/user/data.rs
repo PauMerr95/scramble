@@ -10,13 +10,13 @@ pub enum OS {
     Windows,
     Mac
 }
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub enum Theme {
     #[default]
     DarkLime,
     DeepOcean
 }
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub enum Avatar {
     Bird,
     Duck,
@@ -31,7 +31,7 @@ pub struct UserState {
     pub data: Mutex<UserInfo>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserInfo {
     pub id: u32,
     pub name: String,
@@ -117,7 +117,12 @@ pub fn load_config(config_path: path::PathBuf) -> UserInfo {
     }
 }
 
-pub fn save_config(user_data: UserInfo, config_path: &str) {
+pub fn save_config(user_data: UserInfo, config_path: &str) -> Result<(), String>{
     let raw = toml::to_string(&user_data).expect("Failed to serialize ScrambleConfig");
-    fs::write(config_path, raw).expect("Failed to write raw config to file")
+    if let Some(parent) = path::Path::new(&config_path).parent() {
+        let _ = fs::create_dir(parent)
+            .map_err(|e| format!("Failed to create config directory: {}", e));
+    }
+    fs::write(config_path, raw)
+        .map_err(|e| format!("Failed to write serialize UserData to file: {}", e))
 }

@@ -37,14 +37,6 @@ export class Query {
       if (this.lyt.sidePaneState() !== "Query") {
         setTimeout(this.resetQueryWindow, 5000);
       }
-      switch (this.lyt.queryPage()) {
-        case 'Genome':    this.lyt.loadGrid(queryGenomeGrid);     break;
-        case 'Gene':      this.lyt.loadGrid(queryGeneGrid);       break;
-        case 'Prokaryot': this.lyt.loadGrid(queryProkaryotGrid);  break;
-        case 'Virus':     this.lyt.loadGrid(queryVirusGrid);      break;
-        case 'Organelle': this.lyt.loadGrid(queryOrganelleGrid);  break;
-        case 'QueryMain': this.lyt.loadGrid(queryMainGrid);       break;
-      }
     });
   }
 

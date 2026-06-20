@@ -17,4 +17,8 @@ export class Modal {
       this.lyt.closeModal();
     }
   }
+
+  constructor(lyt: LayoutService) {
+    this.lyt.focusOn("Modal");
+  }
 }

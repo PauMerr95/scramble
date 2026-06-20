@@ -16,7 +16,7 @@ export class Notification {
   private _timer: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit() {
-    this._timer = setTimeout(this.dismiss, 2000);
+    this._timer = setTimeout(this.dismiss, 5000);
   }
   ngOnDestroy() {
     if (this._timer) clearTimeout(this._timer);

@@ -5,6 +5,8 @@ import { CursorPos } from '../types/main_types';
 import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
+import * as mvgSide from '../move-grids/mv-grids-sidePane';
+import * as mvgModal from '../move-grids/mv-grids-modals';
 
 @Injectable({
   providedIn: 'root',
@@ -198,9 +200,25 @@ export class LayoutService {
   openModal(modal: ModalObject) {
     this.activeModal.set(modal);
     this._router.navigateByUrl(modal.route);
+    this.focusOn("Modal");
   }
   closeModal(){
     this.activeModal.set(null);
     this._router.navigateByUrl('/');
+    this.focusOn("MainPane");
+  }
+
+  dbg() {
+    return `
+      === Layout Service Debug Information ===
+      active Focus:      ${this.currentFocus()},\n
+      Side Pane Status:  ${this.sidePaneState()},\n
+      Query Page Status: ${this.queryPage()},\n
+      MoveGrid:          ${this._currentMoveGrid()},\n
+      Selector:          ROW: ${this._selector()?.row} | COL: ${this._selector()?.col} | OFF: ${this._selector()?.offset},\n
+      Targeted:          ${this.currentlyTargeted()},
+      NotificationQueue: ${this._notificationQueue()},\n
+      Active Avatar:     ${this.activeAvatar()},\n
+    `
   }
 }

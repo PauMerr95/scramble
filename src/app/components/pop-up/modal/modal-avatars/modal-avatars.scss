@@ -14,6 +14,15 @@
         pointer-events: none;
     }
 }
+.profile-picture-wrapper {
+    margin-top: 1rem;
+    display: flex;
+}
+.profile-picture-wrapper.targeted {
+    box-shadow: 0 0 15px 10px var(--color-std-600, #9bc408);
+    border-radius: 50%;
+    font-weight: bolder;
+}
 .modal-avatar-grid {
     width: 100%;
     display: grid;

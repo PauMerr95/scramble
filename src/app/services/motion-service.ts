@@ -13,13 +13,13 @@ export class MotionService {
 
   handleKeyDown(e: KeyboardEvent) {
     switch (this.lyt.currentFocus()) {
-      case "MainPane": this._handleMainPane(e); break;
-      case "Navbar":   this._handleNavbar(e); break;
-      case "SidePane": this._handleSidePane(e); break;
-      case "CmdLine":  this._handleCmdLine(e); break;
+      case "MainPane": this._handleMainPane(e); e.preventDefault(); break;
+      case "Navbar":   this._handleNavbar(e); e.preventDefault(); break;
+      case "SidePane": case "Modal": 
+                       this._handleStandard(e); break;
+      case "CmdLine":  this._handleCmdLine(e); e.preventDefault(); break;
       default: this.lyt.notify({kind: "Warn", message: "Currently focused element is not registered in motion-service."})  
     }
-    e.preventDefault();
   }
 
   // ---- MAINPAGE MOTIONS ----
@@ -144,7 +144,7 @@ export class MotionService {
     e.preventDefault();
   }
   // ---- SIDEPANE MOTIONS ----
-  private _handleSidePane(e: KeyboardEvent){
+  private _handleStandard(e: KeyboardEvent){
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
     switch(e.key){
       case ' ':
@@ -170,8 +170,6 @@ export class MotionService {
         return (cmd) ? (cmd + e.key) : e.key;
       });
       const result = this.cli.checkLeader();
-      return;
     }
-    e.preventDefault();
   }
 }

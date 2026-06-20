@@ -11,7 +11,7 @@ export const queryMainGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"]
 ];
 export const queryGenomeGrid: MoveGrid = [
-["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelyle"],
 ];
 export const queryGeneGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],

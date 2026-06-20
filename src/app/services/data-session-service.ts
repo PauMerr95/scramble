@@ -21,7 +21,7 @@ export class DataSessionService {
 
   readonly userName          = computed<string>(()  => this.userData.getUserName());
   readonly isApiKeyAvailable = computed<boolean>(() => this.userData.getApiKey() !== null);
-  readonly scramble_path     = computed<string>(()  => this.userData.getHomePath());
+  readonly config_path       = computed<string>(()  => this.userData.getHomePath());
   readonly loadedFastas      = signal<FastaRecord[]>([]);
 
 

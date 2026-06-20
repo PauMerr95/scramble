@@ -1,11 +1,18 @@
 export const avatars = ["Bird", "Duck", "Earth", "Falling", "Sheep", "Squirrel"]
 export type Avatar = typeof avatars[number];
 
-export type SelectableLocation = 
-    "ProfileAvatar" | "ProfileName" | "ProfileBio" | "ProfileKey" | "ProfilePath" |
-    "FileItem" |
-    "IconQueryGenome" | "IconQueryGene" | "IconQueryProkaryot" | "IconQueryVirus" | "IconQueryOrganelle" |
-    "InputQueryOptGenome";
+const selectableLocations: String[] = [
+    // -- PROFILE --
+    "ProfileAvatar", "ProfileName", "ProfileBio", "ProfileKey", "ProfilePath",
+    // -- FILES --
+    "FileItem",
+    // -- QUERY --
+    "IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle",
+    "InputQueryOptGenome",
+    // -- MODAL AVATARS --
+    "ProfileAvatar"
+]
+export type SelectableLocation = typeof selectableLocations[number] & Avatar;
 
 export const GENOME_QUERY_OPTS = [
     "Genome Assembly Accession",

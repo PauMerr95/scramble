@@ -39,8 +39,8 @@
     </div>
     <div class="info-segment-wrapper"
         [class.targeted]="this.lyt.currentlyTargeted() === 'ProfilePath'">
-        <span class="info-segment-label">PATH:</span>
-        <span class="info-segment-value">{{ this.data.scramble_path() }}</span>
+        <span class="info-segment-label">CONFIG:</span>
+        <span class="info-segment-value">{{ this.data.config_path() }}</span>
     </div>
 
     <label for="drop-down-themes">Theme:</label>
@@ -51,4 +51,6 @@
         [(activeOption)]="lyt.currentTheme"
         (changedOption)="lyt.updateTheme()"
     ></app-drop-down>
+
+    <button (click)="this.user.saveUserInfo()">Save User Data</button>
 </div>
