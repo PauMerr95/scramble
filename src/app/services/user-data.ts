@@ -1,71 +1,98 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, signal, inject, Injectable, effect } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
 import { LayoutService } from './layout-service';
+import { Avatar } from '../types/side_types';
+import { Theme } from '../types/layout_types';
+
+interface UserInfo {
+  id: number,
+  name: string,
+  avatar: Avatar,
+  theme: Theme,
+  apiKey: string | null,
+  lastSessionPath: string | null,
+  createdAt: string,
+  updatedAt: string,
+}
+function defaultUserInfo(): UserInfo {
+  const now = new Date();
+  return {
+    id: 0,
+    name: "Test User",
+    avatar: "Sheep",
+    theme: "DarkLime",
+    apiKey: null,
+    lastSessionPath: null,
+    createdAt: now.toISOString(),
+    updatedAt: new Date(now).toISOString(),
+  }
+}
+function dbgUserInfo(user: UserInfo): void {
+  console.log(`
+    Id: ${user.name},
+    name: ${user.name},
+    avatar: ${user.avatar},
+    theme: ${user.theme},
+    apiKey: ${user.apiKey},
+    lastSessionPath: ${user.lastSessionPath},
+    createdAt: ${user.createdAt},
+    updatedAt: ${user.updatedAt},
+  `);
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserDataService {
-  private _SCRAMBLE_CONFIG: string = "";
-  private _API_KEY: string | null = null;
-  private _USER_NAME: string = "";
+  private _userData        = signal<UserInfo>(defaultUserInfo());
+
+  readonly _SCRAMBLE_CONFIG = signal<string>("");
+  readonly _API_KEY = computed(() => {
+    return this._userData().apiKey;
+  });
+  readonly _USER_NAME = computed(() => {
+    return this._userData().name;
+  });
+  readonly data = this._userData.asReadonly();
 
   constructor() {
-    this.retrieveUserName();
     this.retrieveConfigPath();
-    this.retrieveApiKey();
+    this.retrieveUserInfo();
   }
-
-  readonly lyt = inject(LayoutService);
 
   // Getters and Setters:
-  public getApiKey(): string | null {
-    return this._API_KEY;    
-  };
-  public setApiKey(key: string) {
-    this._API_KEY = key;
-    invoke('save_api_key', { API_KEY: key }); // TODO: implement on backend
-  }
-  public getUserName() {
-    return this._USER_NAME;    
-  };
-  public setUserName(name: string) {
-    this._USER_NAME = name;
-    invoke('save_user_name', { name: name }); // TODO: implement on backend
-  }
-  public getHomePath() {
-    return this._SCRAMBLE_CONFIG;
-  }
-  public setHomePath(path: string) {
-    this._SCRAMBLE_CONFIG = path;
-    invoke('save_home_path', { path: path});
+  public updateUserInfo(info: Partial<UserInfo>) {
+      this._userData.update((user) => {
+        const cleaned = Object.fromEntries(
+          Object.entries(info).filter(([, value]) => value !== undefined)
+        ) as Partial<UserInfo>;
+          return {...user, ...cleaned};
+      }); 
   }
 
   // --- RUST BACKEND FUNCTIONS ---
-  async retrieveUserName(){
-    const name = await invoke<string>('get_user_name');
-    return name;
-  }
-
-  async retrieveApiKey(){
-    const API_KEY = await invoke<string>('get_api_key');
-    return API_KEY;
+  async retrieveUserInfo(){
+    const data = await invoke<UserInfo>('get_user_info');
+    this._userData.set(data);
+    console.log("Retrieved User Information from File");
+    dbgUserInfo(this._userData());
   }
 
   async saveUserInfo(){
-    await invoke<null>('save_user_info', {configPath: this._SCRAMBLE_CONFIG})
+    console.log("Saving User Information to File");
+    dbgUserInfo(this._userData());
+    await invoke<null>('save_user_info', 
+        {userData: this._userData(),
+         configPath: this._SCRAMBLE_CONFIG()})
       .catch((err) => {
-        this.lyt.notify({
-          kind: "Error",
-          message: `Encountered error trying to save user data: ${err}`
+          console.log(`Encountered error trying to save user data: ${err}`);
         });
-      });
   }
 
   async retrieveConfigPath(){
-    await invoke<string>('get_home_path')
+    await invoke<string>('get_config_path')
     .then((path) => {
-      this._SCRAMBLE_CONFIG = path;
+      this._SCRAMBLE_CONFIG.set(path);
     })
     .catch((err) => {
       console.log(`Error during retrieval of Scramble Home Path: ${err}`);

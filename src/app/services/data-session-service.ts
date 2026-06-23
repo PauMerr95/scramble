@@ -19,9 +19,9 @@ GCAGCAGCAGCAGCAGCAGCAATACCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGC`;
 export class DataSessionService {
   readonly userData = inject(UserDataService);
 
-  readonly userName          = computed<string>(()  => this.userData.getUserName());
-  readonly isApiKeyAvailable = computed<boolean>(() => this.userData.getApiKey() !== null);
-  readonly config_path       = computed<string>(()  => this.userData.getHomePath());
+  readonly userName          = computed<string>(()  => this.userData._USER_NAME());
+  readonly isApiKeyAvailable = computed<boolean>(() => this.userData._API_KEY() !== null);
+  readonly config_path       = computed<string>(()  => this.userData._SCRAMBLE_CONFIG());
   readonly loadedFastas      = signal<FastaRecord[]>([]);
 
 

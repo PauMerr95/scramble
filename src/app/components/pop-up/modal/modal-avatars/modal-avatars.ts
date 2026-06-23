@@ -8,6 +8,7 @@ import { AvatarFalling } from '../../../side-pane/profile/avatars/falling/fallin
 import { AvatarSheep } from '../../../side-pane/profile/avatars/sheep/sheep';
 import { AvatarSquirrel } from '../../../side-pane/profile/avatars/squirrel/squirrel';
 import { modalAvatarGrid } from '../../../../move-grids/mv-grids-modals';
+import { UserDataService } from '../../../../services/user-data';
 
 @Component({
   selector: 'app-modal-avatars',
@@ -17,10 +18,11 @@ import { modalAvatarGrid } from '../../../../move-grids/mv-grids-modals';
 })
 export class ModalAvatars {
   readonly lyt = inject(LayoutService);
+  readonly user = inject(UserDataService);
   readonly avatars = avatars;
 
   select(avatar: Avatar) {
-    this.lyt.activeAvatar.set(avatar);
+    this.user.updateUserInfo({avatar: avatar});
     this.lyt.closeModal(); 
   }
 

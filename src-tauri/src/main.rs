@@ -8,6 +8,5 @@ use app_lib::user::data::{self, load_config};
 async fn main() {
   let _config_path = data::default_config_path(data::retrieve_os()).unwrap();
   let user = load_config(_config_path);
-
-  app_lib::run(user);
+  app_lib::run(user.unwrap());
 }

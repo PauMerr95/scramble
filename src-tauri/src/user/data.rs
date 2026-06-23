@@ -39,9 +39,9 @@ pub struct UserInfo {
     pub theme: Theme,
     pub api_key: String,
     pub last_session_path: Option<String>,
-    #[serde(with = "chrono::serde::ts_seconds")]
+    #[serde()]
     pub created_at: DateTime<Utc>,
-    #[serde(with = "chrono::serde::ts_seconds")]
+    #[serde()]
     pub updated_at: DateTime<Utc>,
 }
 
@@ -107,22 +107,36 @@ pub fn retrieve_os() -> OS {
     }
 }
 
-pub fn load_config(config_path: path::PathBuf) -> UserInfo {
+pub fn load_config(config_path: path::PathBuf) -> Result<UserInfo, String> {
     if config_path.exists() {
         let raw = fs::read_to_string(config_path)
-        .expect("Failed to read config");
-        toml::from_str(&raw).unwrap_or_default()
+        .map_err(|_| "Load config read_to_string Error: std::io::Error".to_string())?;
+        let user: Result<UserInfo, String> = toml::from_str(&raw).map_err(|e| format!("Loading config failed on toml parsing: {}", e));
+        match user {
+            Ok(user_info) => {
+                println!("=== Retrieved user info from file ===");
+                dbg!(&user_info);
+                Ok(user_info)
+            },
+            Err(error) => Err(error)
+        }
     } else {
-        UserInfo::new()
+        let user_info = UserInfo::new();
+        println!("=== No existing user found, creating default user ===");
+        dbg!(&user_info);
+        Ok(user_info)
     }
 }
 
-pub fn save_config(user_data: UserInfo, config_path: &str) -> Result<(), String>{
-    let raw = toml::to_string(&user_data).expect("Failed to serialize ScrambleConfig");
+pub fn save_to_file(user_data: &UserInfo, config_path: &str) -> Result<(), String>{
+    let raw = toml::to_string(&user_data)
+        .map_err(|err| format!("Failed to serialize data. Error: {}", err.to_string()))?;
     if let Some(parent) = path::Path::new(&config_path).parent() {
         let _ = fs::create_dir(parent)
             .map_err(|e| format!("Failed to create config directory: {}", e));
     }
-    fs::write(config_path, raw)
-        .map_err(|e| format!("Failed to write serialize UserData to file: {}", e))
+    fs::write(config_path, &raw)
+        .map_err(|e| format!("Failed to write serialize UserData to file: {}", e))?;
+    println!("=== Saved user info to file ===\n{}", raw);
+    Ok(())
 }

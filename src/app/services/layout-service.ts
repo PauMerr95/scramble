@@ -1,4 +1,4 @@
-import { Injectable, signal, inject } from '@angular/core';
+import { Injectable, signal, inject, computed } from '@angular/core';
 import { NavbarLocation, FocusLocation, QueryPage, NotificationObject, ActiveNotification, ModalObject } from '../types/layout_types';
 import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
@@ -7,6 +7,7 @@ import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
 import * as mvgSide from '../move-grids/mv-grids-sidePane';
 import * as mvgModal from '../move-grids/mv-grids-modals';
+import { UserDataService } from './user-data';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,9 @@ export class LayoutService {
   private _notificationQueue = signal<NotificationObject[]>([])
   readonly activeNotifications = signal<ActiveNotification[]>([])
   readonly activeModal = signal<ModalObject | null>(null);
-  readonly activeAvatar = signal<Avatar>("Sheep");
+  readonly activeAvatar = computed(() => {
+    return this.user.data().avatar as Avatar;
+  });
 
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
@@ -31,13 +34,7 @@ export class LayoutService {
 
   readonly currentTheme = signal<Theme>("DarkLime");
 
-  updateTheme(){
-    this.notify({
-      kind: "Info",
-      message: `Theme update triggered: ${this.currentTheme()}`
-    });
-    //TODO: Implement
-  }
+  readonly user = inject(UserDataService);
 
   private _drainQueue() {
     const openSlots = 4 - this.activeNotifications().length;
@@ -185,9 +182,17 @@ export class LayoutService {
       }
     } else if (this.currentFocus() === "Modal"){
         switch(this.activeModal()!.title) {
-          case "AvatarMenu": this.activeAvatar.set(this.currentlyTargeted()!); this.closeModal(); break
+          case "AvatarMenu": this.changeAvatar(this.currentlyTargeted()!); this.closeModal(); break
       }
     }
+  }
+
+  changeAvatar(newAvatar: Avatar) {
+    this.user.updateUserInfo({avatar: newAvatar});
+  }
+  updateTheme() {
+    const newTheme = this.currentTheme();
+    this.user.updateUserInfo({theme: newTheme});
   }
 
   notify(notification: NotificationObject){
