@@ -8,8 +8,12 @@
         Scramble uses their NCBI Datasets v2 REST API interface.
     </span>
     </div>
-    <button (click)="lyt.notify({kind: 'Info', message: 'This is an information'})">Info</button>
-    <button (click)="lyt.notify({kind: 'Warn', message: 'This is a Warning'})">Warn</button>
-    <button (click)="lyt.notify({kind: 'Error', message: 'This is an Error'})">Error</button>
+    <button (click)="lyt.notify({kind: 'Info',    message: 'This is an information'})">Info</button>
+    <button (click)="lyt.notify({kind: 'Warn',    message: 'This is a Warning'})">Warn</button>
+    <button (click)="lyt.notify({kind: 'Error',   message: 'This is an Error'})">Error</button>
     <button (click)="lyt.notify({kind: 'Success', message: 'This is an SuccessMessage'})">Yippieh</button>
+    <app-std-btn
+    [id]="'TestButton1'"
+    [isTargeted]="this.lyt.currentlyTargeted() === 'TestButton1'"
+    [innerText]="'TestButton'"></app-std-btn>
 </div>

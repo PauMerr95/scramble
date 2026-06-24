@@ -1,14 +1,17 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, effect, signal, inject} from '@angular/core';
 import { GENOME_QUERY_OPTS, SelectectableQueryBy, RetrieveRoster, SelectectableRetrieve } from '../../../../types/side_types';
+import { LayoutService } from '../../../../services/layout-service';
+import { StdBtn } from "../../../util/std-btn/std-btn";
 
 @Component({
   selector: 'app-query-genome-page',
-  imports: [],
+  imports: [StdBtn],
   templateUrl: './query-genome-page.html',
   styleUrl: './query-genome-page.scss',
 })
 export class QueryGenomePage {
   readonly queryOptions = GENOME_QUERY_OPTS;
+  readonly lyt = inject(LayoutService);
 
   readonly firstSelection   = signal<SelectectableQueryBy | null>(null);
   readonly secondSelection  = signal<SelectectableRetrieve | null>(null);
@@ -94,5 +97,5 @@ export class QueryGenomePage {
       this.firstSelection();
       this.secondSelection.set(null);
     });
-  };
+  }
 }

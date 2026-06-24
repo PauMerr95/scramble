@@ -31,6 +31,7 @@ import { Component, input, model, ElementRef, viewChild, output } from '@angular
 })
 export class DropDown {
   private _selectRef = viewChild.required<ElementRef>('select');
+
   readonly optionList   = input<string[]>([]); 
   readonly title        = input("Generic Dropdown");
   readonly activeOption = model<string>("Select Option");

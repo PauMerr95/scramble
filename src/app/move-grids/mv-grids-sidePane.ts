@@ -7,23 +7,31 @@ export const profileGrid: MoveGrid = [
     ["ProfileKey"],
     ["ProfilePath"]
 ];
+export type modeGridLoad = "SKIP" | "UNLOAD" | "LOAD";
+
 export const queryMainGrid: MoveGrid = [
-["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"]
+["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["TestButton1"]
 ];
 export const queryGenomeGrid: MoveGrid = [
-["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelyle"],
+["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["RetrieveGenomeBtn"]
 ];
 export const queryGeneGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["RetrieveGeneBtn"]
 ];
 export const queryProkaryotGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["RetrieveProkaryotBtn"]
 ];
 export const queryVirusGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["RetrieveVirusBtn"]
 ];
 export const queryOrganelleGrid: MoveGrid = [
 ["IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle"],
+["RetrieveOrganelleBtn"]
 ];
 
 

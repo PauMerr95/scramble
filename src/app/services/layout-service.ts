@@ -5,37 +5,43 @@ import { CursorPos } from '../types/main_types';
 import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
-import * as mvgSide from '../move-grids/mv-grids-sidePane';
-import * as mvgModal from '../move-grids/mv-grids-modals';
 import { UserDataService } from './user-data';
+import { ButtonID } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LayoutService {
+  // === Injection ===
+  readonly user = inject(UserDataService);
+
+  // === States ===
   private _sidePaneState = signal<NavbarLocation>("Hidden");
-  private _queryPage = signal<QueryPage>("QueryMain");
-  private _currentFocus = signal<FocusLocation | null>(null);
+  private _queryPage     = signal<QueryPage>("QueryMain");
+  private _currentFocus  = signal<FocusLocation | null>(null);
+  readonly activeBtn     = signal<ButtonID | null>(null);
+  readonly activeAvatar  = computed(() => {
+    return this.user.data().avatar as Avatar;
+  });
+
+  // === Movement ===
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
   private readonly _router = inject(Router);
 
+  // === Pop-Ups ===
   private _notificationIDCounter = 0;
   private _notificationQueue = signal<NotificationObject[]>([])
   readonly activeNotifications = signal<ActiveNotification[]>([])
   readonly activeModal = signal<ModalObject | null>(null);
-  readonly activeAvatar = computed(() => {
-    return this.user.data().avatar as Avatar;
-  });
 
+  // === Exports ===
   readonly sidePaneState = this._sidePaneState.asReadonly();
   readonly currentFocus = this._currentFocus.asReadonly();
   readonly queryPage = this._queryPage.asReadonly();
-
   readonly currentTheme = signal<Theme>("DarkLime");
 
-  readonly user = inject(UserDataService);
-
+  // === PRIVATE METHODS ===
   private _drainQueue() {
     const openSlots = 4 - this.activeNotifications().length;
     if (openSlots <= 0) return;
@@ -45,6 +51,22 @@ export class LayoutService {
     this.activeNotifications.update(active => [...active, ...add]);
   }
 
+  private checkRow(){
+    const row = this._selector()!.row;
+    const maxRow = this._currentMoveGrid()!.length - 1;
+    if (row > maxRow) {
+      this._selector()!.row = maxRow;
+    }
+  }
+  private checkColumn(){
+    const row = this._selector()!.row;
+    const maxCol = this._currentMoveGrid()![row].length - 1;
+    if (this._selector()!.col > maxCol) {
+      this._selector()!.col = maxCol;
+    }
+  }
+
+  // === PUBLIC METHODS ===
   currentlyTargeted(): null | SelectableLocation{
     if (!this._currentMoveGrid() || !this._selector()) return null;
     return this._currentMoveGrid()![this._selector()!.row][this._selector()!.col];
@@ -55,7 +77,8 @@ export class LayoutService {
       if (currState === location) return "Hidden";
       return location;
     });
-    (this._sidePaneState() === "Hidden") ? this._currentFocus.set("MainPane") : this._currentFocus.set("SidePane");
+    (this._sidePaneState() === "Hidden") ? this.focusOn("MainPane") : this.focusOn("SidePane");
+    console.log(this.dbg());
   }
 
   focusOn(foc: FocusLocation | null) {
@@ -145,25 +168,13 @@ export class LayoutService {
     // Fails silently when jumpToOffset is not feasable 
     }
   }
-  checkRow(){
-    const row = this._selector()!.row;
-    const maxRow = this._currentMoveGrid()!.length - 1;
-    if (row > maxRow) {
-      this._selector()!.row = maxRow;
-    }
-  }
-  checkColumn(){
-    const row = this._selector()!.row;
-    const maxCol = this._currentMoveGrid()![row].length - 1;
-    if (this._selector()!.col > maxCol) {
-      this._selector()!.col = maxCol;
-    }
-  }
+  
   changeQueryPage(newPage: QueryPage) {
     this._queryPage.set(newPage);
   }
 
   handleEnter() {
+    this.dbg();
     if (this.currentFocus() === "SidePane") {
       if (this._sidePaneState() === "Query") {
         switch (this.currentlyTargeted()) {
@@ -172,6 +183,9 @@ export class LayoutService {
           case "IconQueryProkaryot": this.changeQueryPage("Prokaryot"); break;
           case "IconQueryVirus":     this.changeQueryPage("Virus"); break;
           case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
+          // === Buttons SidePane ===
+          case "TestButton1":        this.triggerButton("TestButton1"); break;
+          case "RetrieveGenomeBtn":  this.triggerButton("RetrieveGenomeBtn")
         }
       }
       if (this._sidePaneState() === "Profile") {
@@ -220,7 +234,7 @@ export class LayoutService {
   }
 
   dbg() {
-    return `
+    console.log(`
       === Layout Service Debug Information ===
       active Focus:      ${this.currentFocus()},\n
       Side Pane Status:  ${this.sidePaneState()},\n
@@ -230,6 +244,19 @@ export class LayoutService {
       Targeted:          ${this.currentlyTargeted()},
       NotificationQueue: ${this._notificationQueue()},\n
       Active Avatar:     ${this.activeAvatar()},\n
-    `
+    `);
+  }
+
+  triggerButton(id: ButtonID) {
+    this.notify(
+      {kind: 'Info', message: `Button ${id} was triggered`}
+    );
+    this.activeBtn.set(id);
+    setTimeout(() => {
+      this.notify(
+        {kind: 'Info', message: `Button ${id} is set inactive`}
+      );
+      this.activeBtn.set(null)
+    }, 100);
   }
 }

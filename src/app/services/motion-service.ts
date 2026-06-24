@@ -11,6 +11,7 @@ export class MotionService {
   readonly sqv = inject(SequenceViewerService);
   readonly cli = inject(CmdLineService);
 
+
   handleKeyDown(e: KeyboardEvent) {
     switch (this.lyt.currentFocus()) {
       case "MainPane": this._handleMainPane(e); e.preventDefault(); break;
@@ -47,8 +48,8 @@ export class MotionService {
       case 'l': case 'ArrowRight': this.sqv.moveCursor(+1);         break;
       case 'j': case 'ArrowDown':  this.sqv.moveCursor(+LINE_WIDTH);break;
       case 'k': case 'ArrowUp':    this.sqv.moveCursor(-LINE_WIDTH);break;
-      case 'w':                    this.sqv.moveCursor(+3);        break;
-      case 'b':                    this.sqv.moveCursor(-3);        break;
+      case 'w':                    this.sqv.moveCursor(+3);         break;
+      case 'b':                    this.sqv.moveCursor(-3);         break;
       case '0': case '^':          this.sqv.moveToLineStart();      break;
       case '$':                    this.sqv.moveToLineEnd();        break;
       case 'g':                    this.sqv.moveToStart();          break;
@@ -155,7 +156,7 @@ export class MotionService {
       case 'k': case 'ArrowUp':    this.lyt.moveUp();    break;
       case 'h': case 'ArrowLeft':  this.lyt.moveLeft();  break;
       case 'l': case 'ArrowRight': this.lyt.moveRight(); break;
-      case 'Enter': this.lyt.handleEnter() ; break;
+      case 'Enter': this.lyt.handleEnter(); break;
     }
     e.preventDefault();
   }
@@ -172,4 +173,5 @@ export class MotionService {
       const result = this.cli.checkLeader();
     }
   }
+
 }

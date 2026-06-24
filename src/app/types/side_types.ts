@@ -1,3 +1,4 @@
+import { ButtonID } from "./util_types";
 export const avatars = ["Bird", "Duck", "Earth", "Falling", "Sheep", "Squirrel"]
 export type Avatar = typeof avatars[number];
 
@@ -8,9 +9,9 @@ const selectableLocations: String[] = [
     "FileItem",
     // -- QUERY --
     "IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle",
-    "InputQueryOptGenome",
+    "InputQueryOptGenome"
 ]
-export type SelectableLocation = typeof selectableLocations[number] & Avatar;
+export type SelectableLocation = typeof selectableLocations[number] & Avatar & ButtonID;
 
 export const GENOME_QUERY_OPTS = [
     "Genome Assembly Accession",

@@ -32,6 +32,9 @@
 }
 @if (secondSelection() !== null) {
     <span class="query-help-example">{{ helpSecondSelection() }}</span>
-    <button class="btn-query">Retrieve</button>
 }
+    <app-std-btn
+    [id]="'RetrieveGenomeBtn'"
+    [isTargeted]="this.lyt.currentlyTargeted() === 'RetrieveGenomeBtn'"
+    [innerText]="'Retrieve Data'"></app-std-btn>
 </div>
