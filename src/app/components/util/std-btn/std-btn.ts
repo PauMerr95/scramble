@@ -8,16 +8,12 @@ import { LayoutService } from '../../../services/layout-service';
   template: `
     <div class="btn-wrapper">
       <button class="btn"
-      [class.targeted]="isTargeted()"
-      [class.pseudoactive]="isTriggered()";
+      [class.targeted]="this.lyt.currentlyTargeted() === this.id()"
+      [class.pseudoactive]="this.lyt.activeBtn() === this.id()"
       (click)="this.onTrigger.emit()">{{innerText()}}</button>
     </div>
   `,
   styles: `
-  :host {
-    pointer-events: none;
-  }
-
   .btn {
     background-color: var(--color-std-900, #273102);
     border: 2px solid var(--color-std-400, #cef72b);
@@ -25,8 +21,8 @@ import { LayoutService } from '../../../services/layout-service';
     color: var(--color-std-100, #f3fdce);
     cursor: pointer;
     display: inline-block;
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 300;
+    font-size: 12px;
     padding: 0 18px;
     line-height: 25px;
     text-align: center;
@@ -34,6 +30,7 @@ import { LayoutService } from '../../../services/layout-service';
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    pointer-events: all;
   }
 
   .btn:hover {
@@ -66,10 +63,6 @@ export class StdBtn {
 
   readonly id          = input.required<ButtonID>();
   readonly innerText   = input<string>("Click!");
-  readonly isTargeted  = input<boolean>(false);
-  readonly isTriggered = computed<boolean>(() => {
-    return this.lyt.activeBtn() === this.id();
-  })
   readonly onTrigger   = output<void>();
 
 }

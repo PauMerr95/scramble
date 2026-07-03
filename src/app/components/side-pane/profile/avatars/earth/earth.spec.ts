@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Earth } from './earth';
+import { AvatarEarth } from './earth';
 
 describe('Earth', () => {
-  let component: Earth;
-  let fixture: ComponentFixture<Earth>;
+  let component: AvatarEarth;
+  let fixture: ComponentFixture<AvatarEarth>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Earth],
+      imports: [AvatarEarth],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Earth);
+    fixture = TestBed.createComponent(AvatarEarth);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

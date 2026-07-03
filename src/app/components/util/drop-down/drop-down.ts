@@ -1,45 +1,155 @@
-import { Component, input, model, ElementRef, viewChild, output } from '@angular/core';
+import { Component, effect, input, signal, inject, model, output, ViewChild } from '@angular/core';
+import { DropDownID } from '../../../types/util_types';
+import { DropDownItem } from './drop-down-item/drop-down-item';
+import { LayoutService } from '../../../services/layout-service';
+import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { IconCaretDown } from '../../icons/caret-down';
 
 @Component({
   selector: 'app-drop-down',
-  imports: [],
+  imports: [DropDownItem, ScrollingModule, IconCaretDown],
   template: `
-    <select #select [attr.aria-title]="title()" required (change)=onChange()>
-      @for (opt of optionList(); track $index) {
-        <option [value]="opt" [selected]="opt === activeOption()">{{ opt }}</option>
-      }
-    </select>
+  <div class="DD-wrapper">
+    <div class="DD-active-option"
+    [class.targeted]="this.lyt.currentlyTargeted() === this.id()"
+    [class.pseudoactive]="this.lyt.activeDD() === this.id()">
+      <span (click)="toggleList()">{{ activeOption() }}</span>
+      <app-icon-caret-down
+      class="caret-down"
+      [class.active]="isOpen()"
+      [svg_color]="'#FAF0E6'"></app-icon-caret-down>
+    </div>
+
+    @if (isOpen()) {
+      <cdk-virtual-scroll-viewport #viewport
+      class="viewport"
+      itemSize=20
+      [style.height]="this.displaySize()*21 + 'px'">
+        <div class="option-list">
+        @for (opt of this.optionList(); let idx = $index; track $index) {
+          <app-drop-down-item
+          class="DD-item"
+          [optionID]="idx"
+          [optionName]="opt"
+          [isTargeted]="idx+'_'+opt === this.lyt.currentlyTargeted()"
+          [visibleRange]="this.visibleRange()"
+          (onClick)="updateActiveOption($event)"
+          (scrollToItem)="handleScroll($event)">
+          </app-drop-down-item>
+        }
+        </div>
+      </cdk-virtual-scroll-viewport>
+    }
+  </div>
   `,
   styles: `
-  :host{
+  .DD-wrapper{
+    width: calc(100% + 0.5em);
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    width: min(80%, 600px);
-    height: 50px;
+    align-items: start;
   }
-  select{
-    padding: 5px 10px 5px 10px;
-    display: block;
-    border: 2px solid var(--color-std-500, #c2f50a);
+  .cdk-virtual-scroll-viewport {
+    height: 84px;
+    width: inherit;
+    pointer-events: all;
+
+    &::-webkit-scrollbar {
+      width: 1em;
+    }
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px var(--color-std-1000, #090f0a);
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      background-color: var(--color-std-500, #c2f50a);
+    }
+  }
+  .option-list {
+    display: grid;
+    grid-auto-columns: auto;
+
+    border-left:  1px solid var(--color-std-200, #e7fb9d);
+    border-right: 1px solid var(--color-std-200, #e7fb9d);
+  }
+  .DD-active-option{
+    width: 8em;
+    height: 1.6em;
+    padding: 2px;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border: 1px solid var(--color-std-500, #c2f50a);
+
     color: var(--color-std-100, #f3fdce);
-    background: var(--color-std-800, #4e6204);
-    border-radius: 2px;
+    background: var(--color-std-700, #749306);
+    border-radius: 6px;
     box-shadow: 8px 8px 5px 0px var(--color-std-900, #273102);
+    background-color: var(--color-std-900, #273102);
+
+    pointer-events: all;
+  }
+  .DD-active-option.targeted {
+    box-shadow: 0  3px 10px 0 var(--color-std-600, #9bc408),
+                0 -3px 10px 0 var(--color-std-600, #9bc408);
+  }
+  .DD-active-option:hover {
+    background-color: var(--color-std-100, #f3fdce);
+    color: var(--color-std-800, #4e6204);
+  }
+  .DD-active-option.pseudoactive {
+    transform: translate(2px, 2px);
+  }
+  .caret-down{
+    display: flex;
+    align-items: center;
+  }
+  .caret-down.active {
+    transform: rotate(180deg);
   }
   `,
 })
 export class DropDown {
-  private _selectRef = viewChild.required<ElementRef>('select');
+  readonly lyt = inject(LayoutService);
 
-  readonly optionList   = input<string[]>([]); 
-  readonly title        = input("Generic Dropdown");
-  readonly activeOption = model<string>("Select Option");
-  changedOption = output<void>();
+  readonly optionList    = input<string[]>([]);
+  readonly title         = input("Generic Dropdown");
+  readonly activeOption  = model<string>("Select Option");
+  readonly changedOption = output<void>();
 
-  onChange(){
-    const option = this._selectRef().nativeElement.value;
-    this.activeOption.set(option);
-    this.changedOption.emit();
+  readonly id     = input.required<DropDownID>();
+  readonly isOpen = signal<boolean>(false);
+  readonly displaySize = input<number>(4);
+  readonly visibleRange = signal<[number, number]>([0, this.displaySize()]);
+
+  @ViewChild(CdkVirtualScrollViewport) viewport!: CdkVirtualScrollViewport;
+
+  constructor(){
+    effect(() => {
+      const activeDD = this.lyt.activeDD();
+      const componentID = this.id();
+      if (activeDD === componentID) {
+        this.toggleList();
+      }
+    });
+  }
+
+  toggleList(): void{
+    this.isOpen.update(state => !state);
+    if(this.isOpen()) {
+      this.lyt.injectIntoGrid(this.optionList().map((opt, idx) => `${idx}_${opt}`), this.lyt.selector!, "col");
+    } else {
+      this.lyt.ejectFromGrid(this.optionList().length, this.lyt.selector!, "col");
+    }
+  }
+  updateActiveOption(id: number){
+    this.activeOption.set(this.optionList()[id]);
+  }
+
+  handleScroll(targetID: number) {
+    this.viewport.scrollToIndex(targetID);
+    this.visibleRange.set([targetID, (targetID + this.displaySize())]);
   }
 }

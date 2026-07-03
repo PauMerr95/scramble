@@ -1,6 +1,5 @@
-import { computed, signal, inject, Injectable, effect } from '@angular/core';
+import { computed, signal, Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
-import { LayoutService } from './layout-service';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
 
@@ -67,7 +66,7 @@ export class UserDataService {
           Object.entries(info).filter(([, value]) => value !== undefined)
         ) as Partial<UserInfo>;
           return {...user, ...cleaned};
-      }); 
+      });
   }
 
   // --- RUST BACKEND FUNCTIONS ---
@@ -81,7 +80,7 @@ export class UserDataService {
   async saveUserInfo(){
     console.log("Saving User Information to File");
     dbgUserInfo(this._userData());
-    await invoke<null>('save_user_info', 
+    await invoke<null>('save_user_info',
         {userData: this._userData(),
          configPath: this._SCRAMBLE_CONFIG()})
       .catch((err) => {

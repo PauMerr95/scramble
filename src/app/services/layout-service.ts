@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
 import { UserDataService } from './user-data';
-import { ButtonID } from '../types/util_types';
+import { ButtonID, DropDownID } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +20,7 @@ export class LayoutService {
   private _queryPage     = signal<QueryPage>("QueryMain");
   private _currentFocus  = signal<FocusLocation | null>(null);
   readonly activeBtn     = signal<ButtonID | null>(null);
+  readonly activeDD      = signal<DropDownID | null>(null);
   readonly activeAvatar  = computed(() => {
     return this.user.data().avatar as Avatar;
   });
@@ -28,6 +29,9 @@ export class LayoutService {
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
   private readonly _router = inject(Router);
+  // for testing purposes
+  get selector(){ return this._selector() };
+  get currentMoveGrid(){ return this._currentMoveGrid() };
 
   // === Pop-Ups ===
   private _notificationIDCounter = 0;
@@ -74,7 +78,10 @@ export class LayoutService {
 
   toggleSidePane(location: NavbarLocation) {
     this._sidePaneState.update((currState) => {
-      if (currState === location) return "Hidden";
+      if (currState === location) {
+        //BUG: Fix at some point - Works fine but could be unsafe in the future
+        this.unloadGrid();
+        return "Hidden";}
       return location;
     });
     (this._sidePaneState() === "Hidden") ? this.focusOn("MainPane") : this.focusOn("SidePane");
@@ -98,7 +105,7 @@ export class LayoutService {
     this._currentMoveGrid.set(null);
   }
 
-  moveDown() { 
+  moveDown() {
     if (!this._currentMoveGrid() || !this._selector()) return;
     if (this._selector()!.row >= this._currentMoveGrid()!.length - 1) return;
     const row = this._selector()!.row;
@@ -110,7 +117,7 @@ export class LayoutService {
     this._selector()!.offset += moves;
     console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col},  Offset: ${this._selector()!.offset}, Target: ${String(this.currentlyTargeted())}`);
   }
-  moveUp() { 
+  moveUp() {
     if (!this._currentMoveGrid() || !this._selector()) return;
     if (this._selector()!.row <= 0) return;
     let moves = this._selector()!.col;
@@ -163,12 +170,12 @@ export class LayoutService {
         } else {
           if (col === this._currentMoveGrid()![row].length - 1) break; // Cant'reach offset
           this.moveRight();
-        } 
+        }
       }
-    // Fails silently when jumpToOffset is not feasable 
+    // Fails silently when jumpToOffset is not feasable
     }
   }
-  
+
   changeQueryPage(newPage: QueryPage) {
     this._queryPage.set(newPage);
   }
@@ -183,15 +190,17 @@ export class LayoutService {
           case "IconQueryProkaryot": this.changeQueryPage("Prokaryot"); break;
           case "IconQueryVirus":     this.changeQueryPage("Virus"); break;
           case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
-          // === Buttons SidePane ===
+          case "RetrieveGenomeBtn":  this.triggerButton("RetrieveGenomeBtn"); break;
+
           case "TestButton1":        this.triggerButton("TestButton1"); break;
-          case "RetrieveGenomeBtn":  this.triggerButton("RetrieveGenomeBtn")
         }
       }
       if (this._sidePaneState() === "Profile") {
         switch (this.currentlyTargeted()){
           case "ProfileAvatar":
-            this.openModal({title: "AvatarMenu", route: 'modal/avatars'});
+            this.openModal({title: "AvatarMenu", route: 'modal/avatars'}); break;
+          case "ProfileBtnSave":    this.triggerButton("ProfileBtnSave"); break;
+          case "ProfileDDThemes":   this.triggerDropDown("ProfileDDThemes"); break;
         }
       }
     } else if (this.currentFocus() === "Modal"){
@@ -257,6 +266,47 @@ export class LayoutService {
         {kind: 'Info', message: `Button ${id} is set inactive`}
       );
       this.activeBtn.set(null)
-    }, 100);
+    }, 200);
+  }
+  triggerDropDown(id: DropDownID) {
+    this.notify(
+      {kind: 'Info', message: `DropDown ${id} was triggered`}
+    );
+    this.activeDD.set(id);
+    setTimeout(() => {
+      this.notify(
+        {kind: 'Info', message: `DropDown ${id} is set inactive`}
+      );
+      this.activeDD.set(null)
+    }, 200);
+  }
+
+  injectIntoGrid(newLocations: string[], loc: CursorPos, by: "row" | "col") {
+    if (this._currentMoveGrid() === null) return;
+    switch (by) {
+      case "row": this._currentMoveGrid.update(grid => {
+        grid![loc.row].splice(loc.col + 1, 0, ...newLocations);
+        return grid;
+      }); break;
+      case "col": this._currentMoveGrid.update(grid => {
+        grid!.splice(loc.row + 1, 0, ...newLocations.map(newLoc => [newLoc]));
+        return grid;
+      }); break;
+    }
+
+  }
+
+  ejectFromGrid(amount: number, loc: CursorPos, by: "row" | "col") {
+    if (this._currentMoveGrid() === null) return;
+    switch (by) {
+      case "row": this._currentMoveGrid.update(grid => {
+        grid![loc.row].splice(loc.col + 1, amount);
+        return grid;
+      }); break;
+      case "col": this._currentMoveGrid.update(grid => {
+        grid!.splice(loc.row + 1, amount);
+        return grid;
+      }); break;
+    }
   }
 }

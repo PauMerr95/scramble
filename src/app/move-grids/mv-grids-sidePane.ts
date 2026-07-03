@@ -5,7 +5,9 @@ export const profileGrid: MoveGrid = [
     ["ProfileName"],
     ["ProfileBio"],
     ["ProfileKey"],
-    ["ProfilePath"]
+    ["ProfilePath"],
+    ["ProfileDDThemes"],
+    ["ProfileBtnSave"]
 ];
 export type modeGridLoad = "SKIP" | "UNLOAD" | "LOAD";
 

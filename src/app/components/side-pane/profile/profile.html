@@ -46,11 +46,16 @@
     <label for="drop-down-themes">Theme:</label>
     <app-drop-down
         id="drop-down-themes"
+        [id]="'ProfileDDThemes'"
         title="profile-themes"
         [optionList]="availableThemes"
         [(activeOption)]="lyt.currentTheme"
         (changedOption)="lyt.updateTheme()"
     ></app-drop-down>
 
-    <button (click)="this.user.saveUserInfo()">Save User Data</button>
+    <app-std-btn
+    [id]="'ProfileBtnSave'"
+    [innerText]="'Save User Data'"
+    (onTrigger)="this.user.saveUserInfo()">
+    </app-std-btn>
 </div>

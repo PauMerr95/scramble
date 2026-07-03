@@ -1,5 +1,3 @@
-import { Route } from "@angular/router";
-
 export const modalTitles = [ "AvatarMenu" ]
 export type ModalTitle = typeof modalTitles[number];
 

@@ -2,7 +2,7 @@ import { ButtonID } from "./util_types";
 export const avatars = ["Bird", "Duck", "Earth", "Falling", "Sheep", "Squirrel"]
 export type Avatar = typeof avatars[number];
 
-const selectableLocations: String[] = [
+const selectableLocations: string[] = [
     // -- PROFILE --
     "ProfileAvatar", "ProfileName", "ProfileBio", "ProfileKey", "ProfilePath",
     // -- FILES --
@@ -11,7 +11,7 @@ const selectableLocations: String[] = [
     "IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle",
     "InputQueryOptGenome"
 ]
-export type SelectableLocation = typeof selectableLocations[number] & Avatar & ButtonID;
+export type SelectableLocation = typeof selectableLocations[number] | Avatar | ButtonID;
 
 export const GENOME_QUERY_OPTS = [
     "Genome Assembly Accession",
