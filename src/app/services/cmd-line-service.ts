@@ -11,7 +11,7 @@ export class CmdLineService {
     private lyt: LayoutService,
     private sqv: SequenceViewerService) {}
 
-  
+
   readonly cmdInput = signal<string>('');
   readonly cmdInputType = signal<CmdInputType | null>(null);
 
@@ -78,7 +78,7 @@ export class CmdLineService {
     }
     return "Failure";
   }
-  
+
   abort(){
     if (this.leaderTimeout) clearTimeout(this.leaderTimeout);
     this.cmdInput.set('');

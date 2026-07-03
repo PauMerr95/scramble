@@ -19,11 +19,13 @@ export class LayoutService {
   private _sidePaneState = signal<NavbarLocation>("Hidden");
   private _queryPage     = signal<QueryPage>("QueryMain");
   private _currentFocus  = signal<FocusLocation | null>(null);
-  readonly activeBtn     = signal<ButtonID | null>(null);
-  readonly activeDD      = signal<DropDownID | null>(null);
   readonly activeAvatar  = computed(() => {
     return this.user.data().avatar as Avatar;
   });
+  // === Events ===
+  readonly activeBtn = signal<ButtonID | null>(null);
+  readonly activeDD  = signal<DropDownID | null>(null);
+  readonly updateDD    = signal<number | null>(null);
 
   // === Movement ===
   private _currentMoveGrid = signal<MoveGrid | null>(null)
@@ -201,6 +203,7 @@ export class LayoutService {
             this.openModal({title: "AvatarMenu", route: 'modal/avatars'}); break;
           case "ProfileBtnSave":    this.triggerButton("ProfileBtnSave"); break;
           case "ProfileDDThemes":   this.triggerDropDown("ProfileDDThemes"); break;
+          default: this.checkDropDownOption();
         }
       }
     } else if (this.currentFocus() === "Modal"){
@@ -208,6 +211,20 @@ export class LayoutService {
           case "AvatarMenu": this.changeAvatar(this.currentlyTargeted()!); this.closeModal(); break
       }
     }
+  }
+
+  checkDropDownOption() {
+    if (this.currentlyTargeted() === null) return;
+    const target = this.currentlyTargeted()!.split('_');
+    if (target.length !== 3) return;
+    const [idItem, idDropDown, _] = target;
+    this.loadUpdate(parseInt(idItem));
+    this.triggerDropDown(idDropDown);
+  }
+
+  loadUpdate(idx: number) {
+    this.updateDD.set(idx);
+    setTimeout(() => this.updateDD.set(null), 200);
   }
 
   changeAvatar(newAvatar: Avatar) {

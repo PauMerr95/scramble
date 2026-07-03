@@ -16,10 +16,10 @@ export class MotionService {
     switch (this.lyt.currentFocus()) {
       case "MainPane": this._handleMainPane(e); e.preventDefault(); break;
       case "Navbar":   this._handleNavbar(e); e.preventDefault(); break;
-      case "SidePane": case "Modal": 
+      case "SidePane": case "Modal":
                        this._handleStandard(e); break;
       case "CmdLine":  this._handleCmdLine(e); e.preventDefault(); break;
-      default: this.lyt.notify({kind: "Warn", message: "Currently focused element is not registered in motion-service."})  
+      default: this.lyt.notify({kind: "Warn", message: "Currently focused element is not registered in motion-service."})
     }
   }
 
@@ -62,19 +62,19 @@ export class MotionService {
       case ' ': {
         this.lyt.focusOn("CmdLine");
         this.cli.handleInput("Leader");
-        break; 
+        break;
       }
-      case '/': { 
+      case '/': {
         this.lyt.focusOn("CmdLine");
         this.cli.handleInput("Search");
-        break; 
+        break;
       }
       case ':': {
         this.lyt.focusOn("CmdLine");
         this.cli.handleInput("Command");
-        break; 
+        break;
       }
-      default: return; 
+      default: return;
     }
     e.preventDefault();
   }
@@ -119,7 +119,7 @@ export class MotionService {
         case 'ArrowUp':    this.sqv.moveCursor(-LINE_WIDTH); e.preventDefault(); break;
       }
     }
-  } 
+  }
 
   private handleVisual(e: KeyboardEvent): void {
     switch (e.key) {
@@ -170,7 +170,7 @@ export class MotionService {
       this.cli.cmdInput.update(cmd => {
         return (cmd) ? (cmd + e.key) : e.key;
       });
-      const result = this.cli.checkLeader();
+      this.cli.checkLeader();
     }
   }
 

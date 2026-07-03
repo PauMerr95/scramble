@@ -12,8 +12,9 @@ import { IconCaretDown } from '../../icons/caret-down';
   <div class="DD-wrapper">
     <div class="DD-active-option"
     [class.targeted]="this.lyt.currentlyTargeted() === this.id()"
-    [class.pseudoactive]="this.lyt.activeDD() === this.id()">
-      <span (click)="toggleList()">{{ activeOption() }}</span>
+    [class.pseudoactive]="this.lyt.activeDD() === this.id()"
+    (click)="toggleList()">
+      <span>{{ activeOption() }}</span>
       <app-icon-caret-down
       class="caret-down"
       [class.active]="isOpen()"
@@ -31,9 +32,9 @@ import { IconCaretDown } from '../../icons/caret-down';
           class="DD-item"
           [optionID]="idx"
           [optionName]="opt"
-          [isTargeted]="idx+'_'+opt === this.lyt.currentlyTargeted()"
+          [isTargeted]="idx+'_'+this.id()+'_'+opt === this.lyt.currentlyTargeted()"
           [visibleRange]="this.visibleRange()"
-          (onClick)="updateActiveOption($event)"
+          (onClick)="updateActiveOption($event);this.toggleList();"
           (scrollToItem)="handleScroll($event)">
           </app-drop-down-item>
         }
@@ -131,15 +132,20 @@ export class DropDown {
       const activeDD = this.lyt.activeDD();
       const componentID = this.id();
       if (activeDD === componentID) {
+        const new_idx = this.lyt.updateDD();
+        if (new_idx !== null) {
+          this.activeOption.set(this.optionList()[new_idx]);
+        }
         this.toggleList();
       }
     });
   }
 
   toggleList(): void{
+    //BUG: Function not work properly when mouse is used in tandem or selector is not on active position
     this.isOpen.update(state => !state);
     if(this.isOpen()) {
-      this.lyt.injectIntoGrid(this.optionList().map((opt, idx) => `${idx}_${opt}`), this.lyt.selector!, "col");
+      this.lyt.injectIntoGrid(this.optionList().map((opt, idx) => `${idx}_${this.id()}_${opt}`), this.lyt.selector!, "col");
     } else {
       this.lyt.ejectFromGrid(this.optionList().length, this.lyt.selector!, "col");
     }
