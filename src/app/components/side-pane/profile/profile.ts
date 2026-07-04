@@ -11,6 +11,7 @@ import { profileGrid } from '../../../move-grids/mv-grids-sidePane';
 import { DropDown } from "../../util/drop-down/drop-down";
 import { UserDataService } from '../../../services/user-data';
 import { StdBtn } from "../../util/std-btn/std-btn";
+import { themes } from '../../../types/layout_types';
 
 
 @Component({
@@ -26,9 +27,7 @@ export class ProfileComponent {
   readonly lyt = inject(LayoutService);
   readonly data = inject(DataSessionService);
   readonly user = inject(UserDataService);
-
-  readonly availableThemes = ["DarkLime", "Ocean", "Catpuccin", "Material", "Swagger", "LightBlue", "LightRed", "LightGreen", "Scramble", "HolyLight", "Vampire", "Doom", "Vanilla", "Tropical"];
-
+  readonly availableThemes = themes;
 
   constructor() {
     effect(() => {

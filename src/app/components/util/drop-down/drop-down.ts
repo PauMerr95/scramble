@@ -1,9 +1,10 @@
 import { Component, effect, input, signal, inject, model, output, ViewChild } from '@angular/core';
-import { DropDownID } from '../../../types/util_types';
+import { DropDownID, DropDownOption } from '../../../types/util_types';
 import { DropDownItem } from './drop-down-item/drop-down-item';
 import { LayoutService } from '../../../services/layout-service';
 import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { IconCaretDown } from '../../icons/caret-down';
+import { GridInjection } from '../../../types/layout_types';
 
 @Component({
   selector: 'app-drop-down',
@@ -115,7 +116,7 @@ import { IconCaretDown } from '../../icons/caret-down';
 export class DropDown {
   readonly lyt = inject(LayoutService);
 
-  readonly optionList    = input<string[]>([]);
+  readonly optionList    = input<readonly DropDownOption[]>([]);
   readonly title         = input("Generic Dropdown");
   readonly activeOption  = model<string>("Select Option");
   readonly changedOption = output<void>();
@@ -142,12 +143,19 @@ export class DropDown {
   }
 
   toggleList(): void{
-    //BUG: Function not work properly when mouse is used in tandem or selector is not on active position
     this.isOpen.update(state => !state);
     if(this.isOpen()) {
-      this.lyt.injectIntoGrid(this.optionList().map((opt, idx) => `${idx}_${this.id()}_${opt}`), this.lyt.selector!, "col");
+      console.log("Injecting into grid");
+      const injection: GridInjection = {
+        insertLoc: structuredClone(this.lyt.selector!),
+        origin: this.id(),
+        axis: "row",
+        fallback: this.optionList().map((opt, idx) => `${idx}_${this.id()}_${opt}`)
+      };
+      this.lyt.injectIntoGrid(injection);
     } else {
-      this.lyt.ejectFromGrid(this.optionList().length, this.lyt.selector!, "col");
+      console.log("Ejecting from grid");
+      this.lyt.ejectFromGrid(this.id());
     }
   }
   updateActiveOption(id: number){

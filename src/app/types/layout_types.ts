@@ -1,12 +1,25 @@
-export const modalTitles = [ "AvatarMenu" ]
+import { CursorPos } from "./main_types";
+import { SelectableLocation } from "./side_types";
+import { dropDownIDs } from "./util_types";
+
+export const modalTitles = [ "AvatarMenu" ] as const;
 export type ModalTitle = typeof modalTitles[number];
 
-export type NavbarLocation = "Profile" | "Files" | "Query" | "Hidden";
-export type FocusLocation = "MainPane" | "Navbar" | "SidePane" | "CmdLine" | "Modal";
-export type QueryPage = "Genome" | "Gene" | "Prokaryot" | "Virus" | "Organelle" | "QueryMain";
-export type Theme = "DarkLime" | "Ocean";
+export const themes = ["DarkLime", "Ocean", "Catpuccin", "Material", "Swagger", "LightBlue", "LightRed", "LightGreen", "Scramble", "HolyLight", "Vampire", "Doom", "Vanilla", "Tropical"] as const;
+export type Theme = typeof themes[number];
 
-export type NotificationType = "Info" | "Warn" | "Error" | "Success";
+export const navbarLocations = ["Profile", "Files", "Query", "Hidden"] as const;
+export type NavbarLocation = typeof navbarLocations[number];
+
+export const focusLocations = ["MainPane", "Navbar", "SidePane", "CmdLine", "Modal"] as const;
+export type FocusLocation = typeof focusLocations[number];
+
+export const queryPages = ["Genome", "Gene", "Prokaryot", "Virus", "Organelle", "QueryMain"] as const;
+export type QueryPage = typeof queryPages[number];
+
+export const notificationTypes = ["Info", "Warn", "Error", "Success"] as const;
+export type NotificationType = typeof notificationTypes[number];
+
 export interface NotificationObject {
     kind: NotificationType,
     message: string
@@ -16,3 +29,23 @@ export interface ModalObject {
     title: ModalTitle,
     route: string
 }
+
+export const gridInjectors = [
+  // == Drop Downs ==
+  ...dropDownIDs,
+] as const;
+
+export type GridInjector = typeof gridInjectors[number];
+
+export interface GridInjection {
+  insertLoc: CursorPos,
+  origin: GridInjector,
+  axis: "col" | "row",
+  fallback: SelectableLocation[];
+}
+
+export interface GridInjectorTracker {
+  validInjection: GridInjector | null;
+  injections: Map<GridInjector, GridInjection>;
+};
+

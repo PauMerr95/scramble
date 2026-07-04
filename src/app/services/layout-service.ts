@@ -1,12 +1,14 @@
 import { Injectable, signal, inject, computed } from '@angular/core';
-import { NavbarLocation, FocusLocation, QueryPage, NotificationObject, ActiveNotification, ModalObject } from '../types/layout_types';
+import { NavbarLocation, FocusLocation, QueryPage,
+         NotificationObject, ActiveNotification, ModalObject,
+         GridInjector, GridInjection, GridInjectorTracker } from '../types/layout_types';
 import { MoveGrid, SelectableLocation } from '../types/side_types';
 import { CursorPos } from '../types/main_types';
 import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
 import { UserDataService } from './user-data';
-import { ButtonID, DropDownID } from '../types/util_types';
+import { ButtonID, DropDownID, DropDownOption } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,7 @@ import { ButtonID, DropDownID } from '../types/util_types';
 export class LayoutService {
   // === Injection ===
   readonly user = inject(UserDataService);
+  private readonly _router = inject(Router);
 
   // === States ===
   private _sidePaneState = signal<NavbarLocation>("Hidden");
@@ -27,11 +30,16 @@ export class LayoutService {
   readonly activeDD  = signal<DropDownID | null>(null);
   readonly updateDD    = signal<number | null>(null);
 
-  // === Movement ===
+  // === Movement === TODO: Consider moving to motion service
   private _currentMoveGrid = signal<MoveGrid | null>(null)
   private _selector = signal<CursorPos | null>(null)
-  private readonly _router = inject(Router);
-  // for testing purposes
+  private _gridTracker: GridInjectorTracker = {
+    validInjection: null,
+    injections: new Map<GridInjector, GridInjection>(),
+  };
+
+
+  //INFO: for testing purposes
   get selector(){ return this._selector() };
   get currentMoveGrid(){ return this._currentMoveGrid() };
 
@@ -48,6 +56,24 @@ export class LayoutService {
   readonly currentTheme = signal<Theme>("DarkLime");
 
   // === PRIVATE METHODS ===
+  private _fastEject(injector: GridInjector) {
+    if (this._currentMoveGrid() === null) return;
+    if (!this._gridTracker.injections.has(injector)) return;
+    const inj: GridInjection = this._gridTracker.injections.get(injector)!;
+    this._currentMoveGrid.update(grid => {
+      switch (inj.axis) {
+        case 'col': {
+          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, inj.fallback.length);
+          break;
+        }
+        case 'row': {
+          grid!.splice(inj.insertLoc.row + 1, inj.fallback.length)
+          break;
+        }
+      }
+      return grid;
+    });
+  }
   private _drainQueue() {
     const openSlots = 4 - this.activeNotifications().length;
     if (openSlots <= 0) return;
@@ -146,6 +172,7 @@ export class LayoutService {
   }
 
   jumpToOffset(offset: number){
+    if (offset === null) return;
     if (!this._currentMoveGrid() || !this._selector()) return;
     console.log("Movegrid and selector are valid");
     if (!offset || offset <= 0) {
@@ -174,7 +201,7 @@ export class LayoutService {
           this.moveRight();
         }
       }
-    // Fails silently when jumpToOffset is not feasable
+    // Fails silently when jumpToOffset is not feasable but will have moved to the outmost position
     }
   }
 
@@ -214,12 +241,19 @@ export class LayoutService {
   }
 
   checkDropDownOption() {
+    //INFO: Very inefficient but works ...
     if (this.currentlyTargeted() === null) return;
     const target = this.currentlyTargeted()!.split('_');
     if (target.length !== 3) return;
     const [idItem, idDropDown, _] = target;
+    const positionDropDown = this.bruteFind(idDropDown as SelectableLocation);
+    if (positionDropDown) {
+      this._selector.set(positionDropDown);
+      this.checkRow();
+      this.checkColumn();
+    }
     this.loadUpdate(parseInt(idItem));
-    this.triggerDropDown(idDropDown);
+    this.triggerDropDown(idDropDown as DropDownID);
   }
 
   loadUpdate(idx: number) {
@@ -270,6 +304,9 @@ export class LayoutService {
       Targeted:          ${this.currentlyTargeted()},
       NotificationQueue: ${this._notificationQueue()},\n
       Active Avatar:     ${this.activeAvatar()},\n
+      MoveGrid:          ${this._currentMoveGrid()},\n
+      InjTracker:        valid:      ${this._gridTracker.validInjection};
+                         injections: ${this._gridTracker.injections};
     `);
   }
 
@@ -286,44 +323,50 @@ export class LayoutService {
     }, 200);
   }
   triggerDropDown(id: DropDownID) {
-    this.notify(
-      {kind: 'Info', message: `DropDown ${id} was triggered`}
-    );
     this.activeDD.set(id);
-    setTimeout(() => {
-      this.notify(
-        {kind: 'Info', message: `DropDown ${id} is set inactive`}
-      );
-      this.activeDD.set(null)
-    }, 200);
+    setTimeout(() => {this.activeDD.set(null)}, 200);
   }
 
-  injectIntoGrid(newLocations: string[], loc: CursorPos, by: "row" | "col") {
+  injectIntoGrid(inj: GridInjection) {
     if (this._currentMoveGrid() === null) return;
-    switch (by) {
-      case "row": this._currentMoveGrid.update(grid => {
-        grid![loc.row].splice(loc.col + 1, 0, ...newLocations);
-        return grid;
-      }); break;
-      case "col": this._currentMoveGrid.update(grid => {
-        grid!.splice(loc.row + 1, 0, ...newLocations.map(newLoc => [newLoc]));
-        return grid;
-      }); break;
-    }
-
+    this._currentMoveGrid.update(grid => {
+      switch (inj.axis) {
+        case 'col': {
+          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, 0, ...inj.fallback);
+          break;
+        }
+        case 'row': {
+          grid!.splice(inj.insertLoc.row + 1, 0, ...inj.fallback.map(loc => [loc]));
+          break;
+        }
+      }
+      return grid;
+    });
+    this._gridTracker.validInjection = inj.origin;
+    this._gridTracker.injections.set(inj.origin, inj);
   }
 
-  ejectFromGrid(amount: number, loc: CursorPos, by: "row" | "col") {
-    if (this._currentMoveGrid() === null) return;
-    switch (by) {
-      case "row": this._currentMoveGrid.update(grid => {
-        grid![loc.row].splice(loc.col + 1, amount);
-        return grid;
-      }); break;
-      case "col": this._currentMoveGrid.update(grid => {
-        grid!.splice(loc.row + 1, amount);
-        return grid;
-      }); break;
+  ejectFromGrid(inj: GridInjector) {
+    if (this._gridTracker.validInjection === inj) {
+      this._fastEject(inj);
+    } else {
+      //TODO: Implement
+      //this._slowEject(inj);
     }
+    this._gridTracker.validInjection = null;
+    this._gridTracker.injections.delete(inj);
+  }
+
+  bruteFind(id: SelectableLocation): CursorPos | null{
+    // === Don't look away ===
+    let row = 0;
+    let offset = 0;
+    while (row < this._currentMoveGrid()!.length) {
+      const col = this._currentMoveGrid()![row].findIndex(loc => loc === id);
+      if (col >= 0) return {row: row, col: col, offset: offset + col};
+      row++;
+      offset += this._currentMoveGrid()![row].length;
+    }
+    return null;
   }
 }
