@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 import { ButtonID } from '../../../types/util_types';
 import { LayoutService } from '../../../services/layout-service';
 
@@ -15,7 +15,7 @@ import { LayoutService } from '../../../services/layout-service';
   `,
   styles: `
   .btn {
-    background-color: var(--color-std-900, #273102);
+    background-color: var(--color-std-700, #749306);
     border: 2px solid var(--color-std-400, #cef72b);
     border-radius: 10px;
     color: var(--color-std-100, #f3fdce);
@@ -23,7 +23,6 @@ import { LayoutService } from '../../../services/layout-service';
     display: inline-block;
     font-weight: 300;
     font-size: 12px;
-    padding: 0 18px;
     line-height: 25px;
     text-align: center;
     text-decoration: none;
@@ -31,6 +30,7 @@ import { LayoutService } from '../../../services/layout-service';
     -webkit-user-select: none;
     touch-action: manipulation;
     pointer-events: all;
+    font-family: 'Georgia';
   }
 
   .btn:hover {
@@ -52,7 +52,7 @@ import { LayoutService } from '../../../services/layout-service';
 
   @media (min-width: 768px) {
     .btn {
-      min-width: 120px;
+      min-width: 100px;
       padding: 0 25px;
     }
   }
@@ -64,5 +64,12 @@ export class StdBtn {
   readonly id          = input.required<ButtonID>();
   readonly innerText   = input<string>("Click!");
   readonly onTrigger   = output<void>();
+
+  constructor(){
+    effect(() => {
+      if (this.lyt.activeBtn() === this.id())
+        this.onTrigger.emit();
+    });
+  }
 
 }

@@ -1,38 +1,45 @@
-import { Component, computed, effect, signal, inject} from '@angular/core';
-import { GENOME_QUERY_OPTS, SelectectableQueryBy, RetrieveRoster, SelectectableRetrieve } from '../../../../types/side_types';
+import { Component, computed, signal, inject, viewChild} from '@angular/core';
+import { GENOME_QUERY_OPTS, SelectectableQueryBy, RetrieveRoster, SelectectableRetrieve, QueryPacket, SelectableLocation } from '../../../../types/side_types';
 import { LayoutService } from '../../../../services/layout-service';
 import { StdBtn } from "../../../util/std-btn/std-btn";
+import { DropDown } from '../../../util/drop-down/drop-down';
+import { InputText } from '../../../util/input-text/input-text';
+import { DataSessionService } from '../../../../services/data-session-service';
+
+
 
 @Component({
   selector: 'app-query-genome-page',
-  imports: [StdBtn],
+  imports: [StdBtn, DropDown, InputText],
   templateUrl: './query-genome-page.html',
   styleUrl: './query-genome-page.scss',
 })
 export class QueryGenomePage {
   readonly queryOptions = GENOME_QUERY_OPTS;
-  readonly lyt = inject(LayoutService);
+  readonly lyt =  inject(LayoutService);
+  readonly data = inject(DataSessionService);
+  readonly inputRef = viewChild<InputText>('input');
 
   readonly firstSelection   = signal<SelectectableQueryBy | null>(null);
   readonly secondSelection  = signal<SelectectableRetrieve | null>(null);
 
   readonly secondOptions = computed(() => {
     const selection: RetrieveRoster = [
-      { value: 'Annotation Report',           compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Annotation Data Package',     compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Annotation Download Summary', compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Annotation Report Summary',   compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Data Package',                compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Download Summary',            compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Revision History',            compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Sequence Report',             compatibleWith: ['Genome Assembly Accession']},
-      { value: 'Assembly Report',             compatibleWith: ['Genome Assembly Accession',
+      { value: 'Annotation Report',           compatibleWith: ['Assembly Accession']},
+      { value: 'Annotation Data Package',     compatibleWith: ['Assembly Accession']},
+      { value: 'Annotation Download Summary', compatibleWith: ['Assembly Accession']},
+      { value: 'Annotation Report Summary',   compatibleWith: ['Assembly Accession']},
+      { value: 'Data Package',                compatibleWith: ['Assembly Accession']},
+      { value: 'Download Summary',            compatibleWith: ['Assembly Accession']},
+      { value: 'Revision History',            compatibleWith: ['Assembly Accession']},
+      { value: 'Sequence Report',             compatibleWith: ['Assembly Accession']},
+      { value: 'Assembly Report',             compatibleWith: ['Assembly Accession',
                                                                'Assembly Name',
                                                                'BioProject Accession',
                                                                'BioSample Accession',
                                                                'Species Taxon',
                                                                'WGS Accession']},
-      { value: 'Assembly Accession',          compatibleWith: ['Nucleotide Sequence Accession']},
+      { value: 'Assembly Accession',          compatibleWith: ['Nucleotide Accession']},
       { value: 'CheckM Histogramm',           compatibleWith: ['Species Taxon']},
     ];
     if (this.firstSelection() === null) return null
@@ -44,13 +51,13 @@ export class QueryGenomePage {
 
   readonly helpFirstSelection = computed(() => {
     const mapHelp = new Map<SelectectableQueryBy, string>([
-      ["Genome Assembly Accession", 
+      ["Assembly Accession",
         "GCF_000001635.27"],
-      ["Nucleotide Sequence Accession",
+      ["Nucleotide Accession",
         "NC_000001.11"],
       ["Assembly Name",
         "mCamDro1.pat"],
-      ["BioProject Accession", 
+      ["BioProject Accession",
         "PRJNA31257"],
       ["BioSample Accession",
         "SAMN15960293"],
@@ -65,13 +72,13 @@ export class QueryGenomePage {
 
   readonly helpSecondSelection = computed(() => {
     const mapHelp = new Map<SelectectableRetrieve, string>([
-      ["Annotation Report", 
+      ["Annotation Report",
         "Retrieves a list of annotation reports corresponding to the query parameters"],
       ["Annotation Data Package",
         "Retrieves a list of annotation reports and sequences corresponding to the query parameters"],
       ["Annotation Download Summary",
         "Retrieves a preview for the annotation package corresponding to the query parameters"],
-      ["Annotation Report Summary", 
+      ["Annotation Report Summary",
         "Retrieves a preview for the annotation reports corresponding to the query parameters"],
       ["Revision History",
         "Retrieves a revision history or list for all versions of the corresponding query"],
@@ -92,10 +99,40 @@ export class QueryGenomePage {
     return mapHelp.get(this.secondSelection()! as SelectectableRetrieve);
   });
 
-  constructor(){
-    effect(() => {
-      this.firstSelection();
-      this.secondSelection.set(null);
+  generateAndLogURL(){
+    if (this.inputRef() === undefined) {
+      this.lyt.notify({kind: 'Error', message: "Undefined Input Reference"});
+      return;
+    }
+    if (this.inputRef()!.value() === null) {
+      this.lyt.notify({kind: 'Warn', message: "Did not provide any query specifier (e.g. Accession ID)"});
+      return;
+    }
+    const query: QueryPacket = {
+      how: this.firstSelection()!,      // Button only displayed when not null
+      what: this.secondSelection()!,    // Button only displayed when not null
+      specifier: this.inputRef()!.value()!  // Can be any crap the user enters
+    };
+    console.log(`Generated the following string:\n${this.data.getFromQuery(query)}`);
+  }
+
+  handleChangeDDOption1(newID: number) {
+    this.firstSelection.set(this.queryOptions[newID]);
+    this.secondSelection.set(null);
+    this.lyt.updateGrid(grid => {
+      console.log(`Running updateGrid on ${grid}`);
+      if (grid!.length < (3 + this.queryOptions.length)) {
+        grid!.push(["QueryInputGenome"     as SelectableLocation]);
+        grid!.push(["QueryDDGenomeOption2" as SelectableLocation]);
+      }
+      return grid;
+    })
+  }
+  handleChangeDDOption2(newID: number) {
+    this.secondSelection.set(this.secondOptions()![newID]);
+    this.lyt.updateGrid(grid => {
+      grid!.push(["RetrieveGenomeBtn"]);
+      return grid;
     });
   }
 }

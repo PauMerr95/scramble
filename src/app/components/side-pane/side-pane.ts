@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, EventEmitter, Input, Output, effect, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, effect, inject, viewChild } from '@angular/core';
 import { IconHideSP } from "../icons/hide_sidePane";
 import { EditorMode } from '../../types/main_types';
 import { LayoutService } from '../../services/layout-service';
@@ -27,7 +27,7 @@ export class SidePane {
     effect(() => {
       if (this.lyt.currentFocus() === "SidePane") {
         this._sidePaneRef().nativeElement.focus();
-      }                       
+      }
     });
   }
 

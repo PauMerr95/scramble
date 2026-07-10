@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { LayoutService } from './layout-service';
 import { SequenceViewerService, LINE_WIDTH } from './sequence-viewer-service';
 import { CmdLineService } from './cmd-line-service';
+import { inputIDs } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class MotionService {
       case "SidePane": case "Modal":
                        this._handleStandard(e); break;
       case "CmdLine":  this._handleCmdLine(e); e.preventDefault(); break;
+      case "InputElement": this._handleInputElement(e); break;
       default: this.lyt.notify({kind: "Warn", message: "Currently focused element is not registered in motion-service."})
     }
   }
@@ -157,6 +159,7 @@ export class MotionService {
       case 'h': case 'ArrowLeft':  this.lyt.moveLeft();  break;
       case 'l': case 'ArrowRight': this.lyt.moveRight(); break;
       case 'Enter': this.lyt.handleEnter(); break;
+      case 'Escape': this.lyt.handleEsc(); break;
     }
     e.preventDefault();
   }
@@ -171,6 +174,12 @@ export class MotionService {
         return (cmd) ? (cmd + e.key) : e.key;
       });
       this.cli.checkLeader();
+    }
+  }
+
+  private _handleInputElement(e: KeyboardEvent) {
+    if (e.key === "Escape"){
+      this.lyt.toggleInput(this.lyt.activeInput()!);
     }
   }
 

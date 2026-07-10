@@ -1,7 +1,9 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CursorPos, FastaRecord, FilePath, Result, SearchResult } from '../types/main_types';
+import { FastaRecord, SearchResult } from '../types/main_types';
 import { LINE_WIDTH } from './sequence-viewer-service';
 import { UserDataService } from './user-data';
+import { NCBIDataService } from './ncbi-data-service';
+import { QueryPacket } from '../types/side_types';
 
 const DUMMY_SEQUENCE = `>DUMMY_ACE2 Homo sapiens ACE2 gene fragment [demo]
 ATGTCAAGCTCTTCCTGGCTCCTTCTCAGCCTTGTTGCTGTAACTAAAACGGAAGTTTATAAACATCATC
@@ -18,6 +20,7 @@ GCAGCAGCAGCAGCAGCAGCAATACCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGCAGC`;
 })
 export class DataSessionService {
   readonly userData = inject(UserDataService);
+  readonly ncbi     = inject(NCBIDataService);
 
   readonly userName          = computed<string>(()  => this.userData._USER_NAME());
   readonly isApiKeyAvailable = computed<boolean>(() => this.userData._API_KEY() !== null);
@@ -62,7 +65,7 @@ export class DataSessionService {
     const rec = this.loadedFastas()[fastaRecordIdx];
     let searchItem = '';
     switch (where) {
-      case 'header':   searchItem += rec.header; break; 
+      case 'header':   searchItem += rec.header; break;
       case 'comments': rec.comments.forEach(comment => {searchItem += comment}); break;
       case 'sequence': searchItem = rec.sequence; break;  // This seems very inefficient
     }
@@ -88,4 +91,7 @@ export class DataSessionService {
     return result;
   }
 
+  getFromQuery(q: QueryPacket){
+    return this.ncbi.createUrl(q);
+  }
 }

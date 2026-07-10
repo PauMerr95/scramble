@@ -1,39 +1,35 @@
 <div class="query-wrapper">
-<div class="query-title-wrapper">
-    <span>Genome Query</span>
-</div>
-<select
-    name="query-option"
-    [value]="firstSelection() ?? 'Choose query option'"
-    (change)="firstSelection.set($any($event.target).value)">
-    <option value="Choose query option" disabled hidden>Choose query option</option>
-    @for (opt of queryOptions; track opt) {
-        <option [value]="opt">{{opt}}</option>
-    }
-</select>
+  <div class="query-title-wrapper">
+      <span>Genome Query</span>
+  </div>
+  <div class="query-subtitle-wrapper">
+      <span>Query By</span>
+  </div>
+  <app-drop-down
+  [id]="'QueryDDGenomeOption1'"
+  [optionList]="this.queryOptions"
+  (changedOption)="handleChangeDDOption1($event)"></app-drop-down>
 
-@if (firstSelection() !== null) {
-    <input 
-        type="text"
-        id="query-input"
-        class="query-input"
-        placeholder="Enter query parameter"
-        />
-    <span class="query-help-example">Example: {{ helpFirstSelection() }}</span>
-    <select
-        name="retrieval-option"
-        [value]="secondSelection() ?? 'Choose retrieval option'"
-        (change)="secondSelection.set($any($event.target).value)">
-            <option value="Choose retrieval option" disabled hidden>Choose retrieval option</option>
-            @for (opt of secondOptions(); track opt) {
-                <option [value]="opt">{{opt}}</option>
-            }
-    </select>
-}
-@if (secondSelection() !== null) {
-    <span class="query-help-example">{{ helpSecondSelection() }}</span>
-}
-    <app-std-btn
-    [id]="'RetrieveGenomeBtn'"
-    [innerText]="'Retrieve Data'"></app-std-btn>
+  @if (firstSelection() !== null) {
+      <span class="query-help-example">Example: {{ helpFirstSelection() }}</span>
+
+      <app-input-text #input
+      [id]="'QueryInputGenome'"
+      [displaySize]=4
+      [recommendations]="[
+          'Test1', 'Test2', 'Test5', 'Testint', 'Tester', 'Testina']"></app-input-text>
+
+      <app-drop-down
+      [id]="'QueryDDGenomeOption2'"
+      [optionList]="this.secondOptions()!"
+      (changedOption)="handleChangeDDOption2($event)"></app-drop-down>
+
+  }
+  @if (secondSelection() !== null) {
+      <span class="query-help-example">{{ helpSecondSelection() }}</span>
+      <app-std-btn
+      [id]="'RetrieveGenomeBtn'"
+      [innerText]="'Retrieve Data'"
+      (onTrigger)="this.generateAndLogURL()"></app-std-btn>
+  }
 </div>

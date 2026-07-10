@@ -14,12 +14,15 @@
     border-top: 2px solid var(--color-std-400, #cef73b);
     border-bottom: 2px solid var(--color-std-400, #cef73b);
 }
-
-select {
+.query-subtitle-wrapper {
     width: 100%;
-    font-size: 12px;
-    line-height: 15px;
+    text-align: center;
+
+    background-color: var(--color-std-700, #749306);
+    border-top: 2px dotted var(--color-std-400, #cef73b);
+    border-bottom: 2px dotted var(--color-std-400, #cef73b);
 }
+
 .query-help-example {
     font-size: 12px;
     font-style: italic;

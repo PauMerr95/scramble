@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { Avatar } from '../types/side_types';
 import { Theme } from '../types/layout_types';
 import { UserDataService } from './user-data';
-import { ButtonID, DropDownID, DropDownOption } from '../types/util_types';
+import { ButtonID, DropDownID, InputID } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +26,10 @@ export class LayoutService {
     return this.user.data().avatar as Avatar;
   });
   // === Events ===
-  readonly activeBtn = signal<ButtonID | null>(null);
-  readonly activeDD  = signal<DropDownID | null>(null);
+  readonly activeBtn   = signal<ButtonID | null>(null);
+  readonly activeDD    = signal<DropDownID | null>(null);
   readonly updateDD    = signal<number | null>(null);
+  readonly activeInput = signal<InputID | null>(null);
 
   // === Movement === TODO: Consider moving to motion service
   private _currentMoveGrid = signal<MoveGrid | null>(null)
@@ -63,17 +64,46 @@ export class LayoutService {
     this._currentMoveGrid.update(grid => {
       switch (inj.axis) {
         case 'col': {
-          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, inj.fallback.length);
+          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, inj.data.length);
           break;
         }
         case 'row': {
-          grid!.splice(inj.insertLoc.row + 1, inj.fallback.length)
+          grid!.splice(inj.insertLoc.row + 1, inj.data.length)
           break;
         }
       }
       return grid;
     });
+    this._selector.update(pos => this._correctRowCol(this._currentMoveGrid()!, pos!));
   }
+
+  private _slowEject(injector: GridInjector) {
+    //TODO: UNTESTED FEATURE ...
+    if (this._currentMoveGrid() === null) return;
+    if (!this._gridTracker.injections.has(injector)) return;
+
+    const injection = this._gridTracker.injections.get(injector)!;
+    this._gridTracker.injections.delete(injector);
+    let grid = this._currentMoveGrid();
+    let result = this.bruteFind(injection.data[0]);
+    if (result === null) {
+      this.notify({
+        kind: "Error",
+        message: "Could not find first occurance of injection in move grid; might have already been removed."
+      }); return;
+    }
+    switch (injection.axis) {
+      case 'col': {
+        grid![result.row].splice(result.col, injection.data.length); break;
+      }
+      case 'row': {
+        grid!.splice(result.row, injection.data.length); break;
+      }
+    }
+
+
+  }
+
   private _drainQueue() {
     const openSlots = 4 - this.activeNotifications().length;
     if (openSlots <= 0) return;
@@ -83,19 +113,37 @@ export class LayoutService {
     this.activeNotifications.update(active => [...active, ...add]);
   }
 
-  private checkRow(){
-    const row = this._selector()!.row;
-    const maxRow = this._currentMoveGrid()!.length - 1;
-    if (row > maxRow) {
-      this._selector()!.row = maxRow;
+  private _correctRowCol(grid: MoveGrid = this._currentMoveGrid()!,
+                         pos: CursorPos = this._selector()!): CursorPos{
+    // TODO: Check logic and and calls to this function. Does not work and will return positions for undefined targets
+
+    // Rows
+    let row = pos.row;
+    const MAXROW = grid.length - 1;
+    let recalcOffset = false;
+    if (row > MAXROW) {
+      recalcOffset = true;
+      row = MAXROW;
     }
-  }
-  private checkColumn(){
-    const row = this._selector()!.row;
-    const maxCol = this._currentMoveGrid()![row].length - 1;
-    if (this._selector()!.col > maxCol) {
-      this._selector()!.col = maxCol;
+    // Columns
+    let col = pos.col;
+    const MAXCOL = grid[row].length;
+    if (col > MAXCOL) {
+      recalcOffset = true;
+      row = MAXCOL;
     }
+    col = Math.min(col, MAXCOL);
+    // Offset
+    if (recalcOffset) {
+      let offset = col;
+      for (let i = 0; i<row; i++) offset += grid[i].length;
+      return {
+        row: row,
+        col: col,
+        offset: offset,
+      }
+    }
+    return pos;
   }
 
   // === PUBLIC METHODS ===
@@ -125,12 +173,20 @@ export class LayoutService {
       this._selector.set({row: 0, col: 0, offset: 0});
     }
     this._currentMoveGrid.set(grid);
-    this.checkRow();
-    this.checkColumn();
+    this._selector.update(pos => this._correctRowCol(grid, pos!));
+    this.dbg();
   }
   unloadGrid() {
     this._selector.set(null);
     this._currentMoveGrid.set(null);
+  }
+  updateGrid(fn: (mvg: MoveGrid | null) => MoveGrid | null) {
+    const newGrid = fn(this._currentMoveGrid());
+    if (newGrid) {
+      this.loadGrid(newGrid);
+      return;
+    }
+    this.unloadGrid();
   }
 
   moveDown() {
@@ -140,7 +196,7 @@ export class LayoutService {
     const col = this._selector()!.col;
     let moves = this._currentMoveGrid()![row!].length - col!;
     this._selector()!.row++;
-    this.checkColumn();
+    this._selector.update(pos => this._correctRowCol(this._currentMoveGrid()!, pos!));
     moves += this._selector()!.col;
     this._selector()!.offset += moves;
     console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col},  Offset: ${this._selector()!.offset}, Target: ${String(this.currentlyTargeted())}`);
@@ -150,7 +206,7 @@ export class LayoutService {
     if (this._selector()!.row <= 0) return;
     let moves = this._selector()!.col;
     this._selector()!.row--;
-    this.checkColumn();
+    this._selector.update(pos => this._correctRowCol(this._currentMoveGrid()!, pos!));
     moves += this._currentMoveGrid()![this._selector()!.row].length - this._selector()!.col;
     this._selector()!.offset -= moves;
     console.log(`Row: ${this._selector()!.row}, Col: ${this._selector()!.col}, Offset: ${this._selector()!.offset}, Target: ${String(this.currentlyTargeted())}`);
@@ -169,6 +225,11 @@ export class LayoutService {
     this._selector()!.col++;
     this._selector()!.offset++;
     console.log(`row: ${this._selector()!.row}, col: ${this._selector()!.col}, offset: ${this._selector()!.offset}`);
+  }
+
+  jumpToID(id: SelectableLocation){
+    const result = this.bruteFind(id);
+    if (result) this._selector.set(result);
   }
 
   jumpToOffset(offset: number){
@@ -209,6 +270,18 @@ export class LayoutService {
     this._queryPage.set(newPage);
   }
 
+  handleEsc() {
+    if (this.currentFocus() === "SidePane") {
+      // === remove all injections ===
+      if (this._gridTracker.validInjection !== null) {
+        this._fastEject(this._gridTracker.validInjection);
+        for (let inj in this._gridTracker.injections.keys()) {
+          this._slowEject(inj as GridInjector);
+        }
+      }
+    }
+  }
+
   handleEnter() {
     this.dbg();
     if (this.currentFocus() === "SidePane") {
@@ -221,7 +294,11 @@ export class LayoutService {
           case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
           case "RetrieveGenomeBtn":  this.triggerButton("RetrieveGenomeBtn"); break;
 
-          case "TestButton1":        this.triggerButton("TestButton1"); break;
+          case "TestButton1":            this.triggerButton("TestButton1"); break;
+          case "QueryDDGenomeOption1":   this.triggerDropDown("QueryDDGenomeOption1"); break;
+          case "QueryDDGenomeOption2":   this.triggerDropDown("QueryDDGenomeOption2"); break;
+          case "QueryInputGenome":       this.toggleInput("QueryInputGenome"); break;
+          default: this.checkDropDownOption();
         }
       }
       if (this._sidePaneState() === "Profile") {
@@ -242,15 +319,15 @@ export class LayoutService {
 
   checkDropDownOption() {
     //INFO: Very inefficient but works ...
-    if (this.currentlyTargeted() === null) return;
+    if (!this.currentlyTargeted()) return;
     const target = this.currentlyTargeted()!.split('_');
     if (target.length !== 3) return;
     const [idItem, idDropDown, _] = target;
     const positionDropDown = this.bruteFind(idDropDown as SelectableLocation);
     if (positionDropDown) {
-      this._selector.set(positionDropDown);
-      this.checkRow();
-      this.checkColumn();
+      this._selector.set(
+        this._correctRowCol(this._currentMoveGrid()!, positionDropDown)
+      );
     }
     this.loadUpdate(parseInt(idItem));
     this.triggerDropDown(idDropDown as DropDownID);
@@ -311,20 +388,22 @@ export class LayoutService {
   }
 
   triggerButton(id: ButtonID) {
-    this.notify(
-      {kind: 'Info', message: `Button ${id} was triggered`}
-    );
     this.activeBtn.set(id);
-    setTimeout(() => {
-      this.notify(
-        {kind: 'Info', message: `Button ${id} is set inactive`}
-      );
-      this.activeBtn.set(null)
-    }, 200);
+    setTimeout(() => this.activeBtn.set(null), 200);
   }
   triggerDropDown(id: DropDownID) {
     this.activeDD.set(id);
-    setTimeout(() => {this.activeDD.set(null)}, 200);
+    setTimeout(() => this.activeDD.set(null), 200);
+  }
+  toggleInput(id: InputID) {
+    this.activeInput.update(state => {
+      if (state === id) {
+        this.focusOn("SidePane");
+        return null;
+      }
+      this.focusOn("InputElement");
+      return id;
+    });
   }
 
   injectIntoGrid(inj: GridInjection) {
@@ -332,11 +411,11 @@ export class LayoutService {
     this._currentMoveGrid.update(grid => {
       switch (inj.axis) {
         case 'col': {
-          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, 0, ...inj.fallback);
+          grid![inj.insertLoc.row].splice(inj.insertLoc.col + 1, 0, ...inj.data);
           break;
         }
         case 'row': {
-          grid!.splice(inj.insertLoc.row + 1, 0, ...inj.fallback.map(loc => [loc]));
+          grid!.splice(inj.insertLoc.row + 1, 0, ...inj.data.map(loc => [loc]));
           break;
         }
       }
@@ -350,8 +429,7 @@ export class LayoutService {
     if (this._gridTracker.validInjection === inj) {
       this._fastEject(inj);
     } else {
-      //TODO: Implement
-      //this._slowEject(inj);
+      this._slowEject(inj);
     }
     this._gridTracker.validInjection = null;
     this._gridTracker.injections.delete(inj);
@@ -369,4 +447,5 @@ export class LayoutService {
     }
     return null;
   }
+
 }

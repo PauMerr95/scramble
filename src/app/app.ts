@@ -22,7 +22,7 @@ export class App {
   protected readonly motion = inject(MotionService)
 
   activeMode: EditorMode = "Normal";
-  
+
   switchMode(mode: EditorMode) {
     this.activeMode = mode;
   }

@@ -6,6 +6,16 @@ import { ScrollingModule, CdkVirtualScrollViewport } from '@angular/cdk/scrollin
 import { IconCaretDown } from '../../icons/caret-down';
 import { GridInjection } from '../../../types/layout_types';
 
+//  INFO:
+//  ===Inputs===
+//  * id (also register in DropDownID) REQUIRED
+//  * optionList (also register in DropDownOption),
+//  ===Outputs===
+//  * changedOptions: $(event) = id: number in optionList that reflects new activeOption
+//  ===Injections===
+//  * LayoutService => needed for even triggers
+//
+
 @Component({
   selector: 'app-drop-down',
   imports: [DropDownItem, ScrollingModule, IconCaretDown],
@@ -30,7 +40,6 @@ import { GridInjection } from '../../../types/layout_types';
         <div class="option-list">
         @for (opt of this.optionList(); let idx = $index; track $index) {
           <app-drop-down-item
-          class="DD-item"
           [optionID]="idx"
           [optionName]="opt"
           [isTargeted]="idx+'_'+this.id()+'_'+opt === this.lyt.currentlyTargeted()"
@@ -45,6 +54,10 @@ import { GridInjection } from '../../../types/layout_types';
   </div>
   `,
   styles: `
+  :host{
+    display: inline-flex;
+    justify-content: stretch;
+  }
   .DD-wrapper{
     width: calc(100% + 0.5em);
     display: flex;
@@ -76,21 +89,29 @@ import { GridInjection } from '../../../types/layout_types';
     border-right: 1px solid var(--color-std-200, #e7fb9d);
   }
   .DD-active-option{
-    width: 8em;
+    width: calc(100% - 1em);
     height: 1.6em;
     padding: 2px;
+    min-width: 140px;
 
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 5px;
     align-items: center;
     border: 1px solid var(--color-std-500, #c2f50a);
 
-    color: var(--color-std-100, #f3fdce);
-    background: var(--color-std-700, #749306);
-    border-radius: 6px;
-    box-shadow: 8px 8px 5px 0px var(--color-std-900, #273102);
     background-color: var(--color-std-900, #273102);
+    border-radius: 10px;
+    color: var(--color-std-100, #f3fdce);
+    line-height: 25px;
 
+    font-weight: 300;
+    font-size: 12px;
+
+    user-select: none;
+    cursor: pointer;
+    touch-action: manipulation;
     pointer-events: all;
   }
   .DD-active-option.targeted {
@@ -117,9 +138,8 @@ export class DropDown {
   readonly lyt = inject(LayoutService);
 
   readonly optionList    = input<readonly DropDownOption[]>([]);
-  readonly title         = input("Generic Dropdown");
   readonly activeOption  = model<string>("Select Option");
-  readonly changedOption = output<void>();
+  readonly changedOption = output<number>();
 
   readonly id     = input.required<DropDownID>();
   readonly isOpen = signal<boolean>(false);
@@ -135,7 +155,7 @@ export class DropDown {
       if (activeDD === componentID) {
         const new_idx = this.lyt.updateDD();
         if (new_idx !== null) {
-          this.activeOption.set(this.optionList()[new_idx]);
+          this.updateActiveOption(new_idx);
         }
         this.toggleList();
       }
@@ -147,10 +167,11 @@ export class DropDown {
     if(this.isOpen()) {
       console.log("Injecting into grid");
       const injection: GridInjection = {
-        insertLoc: structuredClone(this.lyt.selector!),
+        insertLoc: (this.id() === this.lyt.currentlyTargeted()) ?
+                   structuredClone(this.lyt.selector!) : this.lyt.bruteFind(this.id())!,
         origin: this.id(),
         axis: "row",
-        fallback: this.optionList().map((opt, idx) => `${idx}_${this.id()}_${opt}`)
+        data: this.optionList().map((opt, idx) => `${idx}_${this.id()}_${opt}`)
       };
       this.lyt.injectIntoGrid(injection);
     } else {
@@ -160,6 +181,7 @@ export class DropDown {
   }
   updateActiveOption(id: number){
     this.activeOption.set(this.optionList()[id]);
+    this.changedOption.emit(id);
   }
 
   handleScroll(targetID: number) {

@@ -1,5 +1,4 @@
-import { Component, input, output, inject, effect, viewChild, ElementRef } from '@angular/core';
-import { InteractivityChecker } from '@angular/cdk/a11y';
+import { Component, input, output, effect, viewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-drop-down-item',
@@ -17,23 +16,24 @@ import { InteractivityChecker } from '@angular/cdk/a11y';
       height: inherit;
       width: inherit;
       display: flex;
-      justify-content: center;
-      padding: 2px;
+      justify-content: stretch;
 
       font-size: 11px;
     }
     div {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       height: 20px;
       width: 100%;
       pointer-events: all;
+      padding: 0 6px 0 6px;
 
       color: var(--color-std-100, #f3fdce);
       border-bottom: 1px dashed var(--color-std-200, #e7fb9d);
-      background: var(--color-std-800, #4e6204);
+      background: var(--color-std-900, #273102);
     }
     div:hover{
+      cursor: pointer;
       background-color: var(--color-std-100, #f3fdce);
       color: var(--color-std-800, #4e6204);
     }

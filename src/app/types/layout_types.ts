@@ -11,7 +11,7 @@ export type Theme = typeof themes[number];
 export const navbarLocations = ["Profile", "Files", "Query", "Hidden"] as const;
 export type NavbarLocation = typeof navbarLocations[number];
 
-export const focusLocations = ["MainPane", "Navbar", "SidePane", "CmdLine", "Modal"] as const;
+export const focusLocations = ["MainPane", "Navbar", "SidePane", "CmdLine", "Modal", "InputElement"] as const;
 export type FocusLocation = typeof focusLocations[number];
 
 export const queryPages = ["Genome", "Gene", "Prokaryot", "Virus", "Organelle", "QueryMain"] as const;
@@ -41,7 +41,7 @@ export interface GridInjection {
   insertLoc: CursorPos,
   origin: GridInjector,
   axis: "col" | "row",
-  fallback: SelectableLocation[];
+  data: SelectableLocation[];
 }
 
 export interface GridInjectorTracker {

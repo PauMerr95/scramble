@@ -1,6 +1,12 @@
-import { ButtonID } from "./util_types";
+import { ButtonID, DropDownID, InputID } from "./util_types";
 export const avatars = ["Bird", "Duck", "Earth", "Falling", "Sheep", "Squirrel"]
 export type Avatar = typeof avatars[number];
+
+export interface QueryPacket {
+  how:  SelectectableQueryBy,
+  what: SelectectableRetrieve,
+  specifier: string,
+}
 
 const selectableLocations: string[] = [
     // -- PROFILE --
@@ -9,13 +15,12 @@ const selectableLocations: string[] = [
     "FileItem",
     // -- QUERY --
     "IconQueryGenome", "IconQueryGene", "IconQueryProkaryot", "IconQueryVirus", "IconQueryOrganelle",
-    "InputQueryOptGenome"
 ]
-export type SelectableLocation = typeof selectableLocations[number] | Avatar | ButtonID;
+export type SelectableLocation = typeof selectableLocations[number] | Avatar | ButtonID | DropDownID | InputID;
 
 export const GENOME_QUERY_OPTS = [
-    "Genome Assembly Accession",
-    "Nucleotide Sequence Accession",
+    "Assembly Accession",
+    "Nucleotide Accession",
     "Assembly Name",
     "BioProject Accession",
     "BioSample Accession",
@@ -44,5 +49,3 @@ interface RetrieveRosterItem {
 }
 export interface RetrieveRoster extends Array<RetrieveRosterItem>{}
 export type MoveGrid = SelectableLocation[][];
-export type ExpPoint = number;
-export type ExpPerc = number;
