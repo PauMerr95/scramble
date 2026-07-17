@@ -161,7 +161,6 @@ export class LayoutService {
       return location;
     });
     (this._sidePaneState() === "Hidden") ? this.focusOn("MainPane") : this.focusOn("SidePane");
-    console.log(this.dbg());
   }
 
   focusOn(foc: FocusLocation | null) {
@@ -174,7 +173,6 @@ export class LayoutService {
     }
     this._currentMoveGrid.set(grid);
     this._selector.update(pos => this._correctRowCol(grid, pos!));
-    this.dbg();
   }
   unloadGrid() {
     this._selector.set(null);
@@ -233,37 +231,26 @@ export class LayoutService {
   }
 
   jumpToOffset(offset: number){
-    if (offset === null) return;
+    if (!offset) return;
     if (!this._currentMoveGrid() || !this._selector()) return;
     console.log("Movegrid and selector are valid");
-    if (!offset || offset <= 0) {
+    if (offset <= 0) {
       console.log("Move to start intentionally");
       this._selector.set({row: 0, col: 0, offset: 0});
     }
-    let deltaOff = offset - this._selector()!.offset;
-    console.log(`Delta Off: ${deltaOff}`);
-    while (deltaOff !== 0) {
-      const row = this._selector()!.row;
-      const col = this._selector()!.col;
-      deltaOff = offset - this._selector()!.offset;
-      console.log(`Delta Off: ${deltaOff}`);
-      if (deltaOff < 0) {
-        if (deltaOff*-1 > col) {
-          this.moveUp();
-        } else {
-          this.moveLeft();
-        }
-      } else {
-        if (deltaOff >= this._currentMoveGrid()![row].length - col) {
-          if (row === this._currentMoveGrid()!.length - 1) break; // Can't reach offset
-          this.moveDown();
-        } else {
-          if (col === this._currentMoveGrid()![row].length - 1) break; // Cant'reach offset
-          this.moveRight();
-        }
-      }
-    // Fails silently when jumpToOffset is not feasable but will have moved to the outmost position
+    let remaining = offset;
+    const grid = this._currentMoveGrid()!;
+    let rowIdx = 0;
+    while (rowIdx < grid.length && grid[rowIdx].length <= remaining) {
+      remaining -= grid[rowIdx].length;
+      rowIdx++;
     }
+    if (rowIdx >= grid.length) return;
+    this._selector.set({
+      row: rowIdx,
+      col: remaining,
+      offset: offset
+    })
   }
 
   changeQueryPage(newPage: QueryPage) {
@@ -283,7 +270,6 @@ export class LayoutService {
   }
 
   handleEnter() {
-    this.dbg();
     if (this.currentFocus() === "SidePane") {
       if (this._sidePaneState() === "Query") {
         switch (this.currentlyTargeted()) {
@@ -292,11 +278,16 @@ export class LayoutService {
           case "IconQueryProkaryot": this.changeQueryPage("Prokaryot"); break;
           case "IconQueryVirus":     this.changeQueryPage("Virus"); break;
           case "IconQueryOrganelle": this.changeQueryPage("Organelle"); break;
+          // === BUTTONS ===
           case "RetrieveGenomeBtn":  this.triggerButton("RetrieveGenomeBtn"); break;
-
-          case "TestButton1":            this.triggerButton("TestButton1"); break;
+          case "RetrieveGeneBtn":    this.triggerButton("RetrieveGeneBtn"); break;
+          case "RetrieveProkaryotBtn":  this.triggerButton("RetrieveProkaryotBtn"); break;
+          case "RetrieveVirusBtn":      this.triggerButton("RetrieveVirusBtn"); break;
+          case "RetrieveOrganelleBtn":  this.triggerButton("RetrieveOrganelleBtn"); break;
+          // === DROPDOWNS ===
           case "QueryDDGenomeOption1":   this.triggerDropDown("QueryDDGenomeOption1"); break;
           case "QueryDDGenomeOption2":   this.triggerDropDown("QueryDDGenomeOption2"); break;
+          // === INPUT ===
           case "QueryInputGenome":       this.toggleInput("QueryInputGenome"); break;
           default: this.checkDropDownOption();
         }
@@ -381,11 +372,16 @@ export class LayoutService {
       Targeted:          ${this.currentlyTargeted()},
       NotificationQueue: ${this._notificationQueue()},\n
       Active Avatar:     ${this.activeAvatar()},\n
-      MoveGrid:          ${this._currentMoveGrid()},\n
+      MoveGrid:          \n${this.mvGrid_toString(this._currentMoveGrid())},\n
       InjTracker:        valid:      ${this._gridTracker.validInjection};
                          injections: ${this._gridTracker.injections};
     `);
   }
+  mvGrid_toString(grid: MoveGrid | null): string {
+    if (!grid) return ""
+    return `[${grid.map(arr => '\t[' + arr.reduce((a, b) => a + ', ' + b) + '],\n')}]`;
+  }
+
 
   triggerButton(id: ButtonID) {
     this.activeBtn.set(id);
@@ -442,8 +438,8 @@ export class LayoutService {
     while (row < this._currentMoveGrid()!.length) {
       const col = this._currentMoveGrid()![row].findIndex(loc => loc === id);
       if (col >= 0) return {row: row, col: col, offset: offset + col};
-      row++;
       offset += this._currentMoveGrid()![row].length;
+      row++;
     }
     return null;
   }

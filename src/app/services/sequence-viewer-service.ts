@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, inject, effect } from '@angular/core';
-import { CursorPos, EditorMode, sequence, VisualSelection, FastaRecord } from '../types/main_types';
+import { EditorMode, sequence, VisualSelection, FastaRecord } from '../types/main_types';
 import { HighlightArea } from '../types/cmd_types';
 import { DataSessionService } from './data-session-service';
 
@@ -10,7 +10,7 @@ export const LINE_WIDTH = 120;
   providedIn: 'root',
 })
 export class SequenceViewerService {
-  readonly data = inject(DataSessionService);
+  readonly data =     inject(DataSessionService);
   readonly records =  this.data.loadedFastas;
   readonly activeRecordIdx = signal<number>(0);
 
@@ -135,7 +135,7 @@ export class SequenceViewerService {
   }
   //------Editing--------
   insertAt(offset: number, char: string): void {
-    this.sequence.update(seq => 
+    this.sequence.update(seq =>
       seq.slice(0, offset) + char.toUpperCase() + seq.slice(offset)
     );
     this.moveCursor(+1);
@@ -150,7 +150,7 @@ export class SequenceViewerService {
   }
   replaceAt(offset: number, char: string): void {
     this.sequence.update(seq => {
-      return seq.slice(0, offset) + char.toUpperCase() + seq.slice(offset + 1);      
+      return seq.slice(0, offset) + char.toUpperCase() + seq.slice(offset + 1);
     });
     this._commitSequence();
   }
@@ -165,7 +165,7 @@ export class SequenceViewerService {
     this.setMode("Normal");
     this._commitSequence();
   }
-    
+
   private _commitSequence(): void {
     const index = this.activeRecordIdx();
     this.records.update(recs => {

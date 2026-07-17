@@ -25,6 +25,7 @@ export interface NotificationObject {
     message: string
 }
 export type ActiveNotification = NotificationObject & { id: number };
+
 export interface ModalObject {
     title: ModalTitle,
     route: string

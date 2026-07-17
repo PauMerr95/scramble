@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { LayoutService } from './layout-service';
 import { SequenceViewerService, LINE_WIDTH } from './sequence-viewer-service';
 import { CmdLineService } from './cmd-line-service';
-import { inputIDs } from '../types/util_types';
 
 @Injectable({
   providedIn: 'root',

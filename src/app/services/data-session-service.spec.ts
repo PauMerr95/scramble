@@ -1,6 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-
 import { DataSessionService } from './data-session-service';
+
+export const mockedDataSessionsService = vi.fn(class {
+  // userData = mockedUserDataService;
+  // ncbi     = mockedNCBIDataService;
+});
 
 describe('DataSessionService', () => {
   let service: DataSessionService;
@@ -18,7 +22,7 @@ describe('DataSessionService', () => {
   it('method "parseFasta" works as expected', () => {
     const idxTest = service.loadedFastas().length - 1;
     expect(service.loadedFastas()[idxTest].header, "Header not parsed correctly")
-      .toBe(testSequence.substring(1, testSequence.indexOf('\n')).trim()); 
+      .toBe(testSequence.substring(1, testSequence.indexOf('\n')).trim());
     expect(service.loadedFastas()[idxTest].comments[0], "Fasta comment not parsed correctly")
       .toBe("This is a comment!");
     expect(service.loadedFastas()[idxTest].sequence.startsWith(`
@@ -62,7 +66,7 @@ describe('DataSessionService', () => {
           resultSequence_long.value.length,
           "Search with long query: Found occurences deviate from expected one.")
         .toBe(1);
-      
+
       // Testing search for metadata in header and comment
       expect(resultHeader.status,  "Could not find 'Vulpes' in header.")
         .toBe("Pass");

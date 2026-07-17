@@ -1,31 +1,8 @@
 import { computed, signal, Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
-import { Avatar } from '../types/side_types';
-import { Theme } from '../types/layout_types';
+import { defaultUserInfo, UserInfo } from '../types/data_types';
 
-interface UserInfo {
-  id: number,
-  name: string,
-  avatar: Avatar,
-  theme: Theme,
-  apiKey: string | null,
-  lastSessionPath: string | null,
-  createdAt: string,
-  updatedAt: string,
-}
-function defaultUserInfo(): UserInfo {
-  const now = new Date();
-  return {
-    id: 0,
-    name: "Test User",
-    avatar: "Sheep",
-    theme: "DarkLime",
-    apiKey: null,
-    lastSessionPath: null,
-    createdAt: now.toISOString(),
-    updatedAt: new Date(now).toISOString(),
-  }
-}
+
 function dbgUserInfo(user: UserInfo): void {
   console.log(`
     Id: ${user.name},
@@ -54,10 +31,7 @@ export class UserDataService {
   });
   readonly data = this._userData.asReadonly();
 
-  constructor() {
-    this.retrieveConfigPath();
-    this.retrieveUserInfo();
-  }
+  constructor() {}
 
   // Getters and Setters:
   public updateUserInfo(info: Partial<UserInfo>) {
@@ -70,6 +44,16 @@ export class UserDataService {
   }
 
   // --- RUST BACKEND FUNCTIONS ---
+   //INFO: init must ba called in app bootstrap. Moved away from constructor.
+  async init(): Promise<void> {
+    try {
+      await this.retrieveConfigPath();
+      await this.retrieveUserInfo();
+    } catch (err) {
+      console.error('UserDataService was unable to load user data, continuing with default values');
+    }
+  }
+
   async retrieveUserInfo(){
     const data = await invoke<UserInfo>('get_user_info');
     this._userData.set(data);

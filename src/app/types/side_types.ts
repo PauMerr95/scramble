@@ -8,7 +8,7 @@ export interface QueryPacket {
   specifier: string,
 }
 
-const selectableLocations: string[] = [
+export const selectableLocations: string[] = [
     // -- PROFILE --
     "ProfileAvatar", "ProfileName", "ProfileBio", "ProfileKey", "ProfilePath",
     // -- FILES --
